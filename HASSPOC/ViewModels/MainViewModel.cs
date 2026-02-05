@@ -1,4 +1,4 @@
-﻿namespace HASSPOC.ViewModels;
+﻿namespace HASS.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {

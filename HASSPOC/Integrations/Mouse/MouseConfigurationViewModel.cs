@@ -1,4 +1,4 @@
-﻿namespace HASSPOC.Integrations.Mouse;
+﻿namespace HASS.Integrations.Mouse;
 
 internal partial class MouseConfigurationViewModel : IntegrationViewModelBase<MouseConfiguration>
 {

@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace HASSPOC.Integrations
+namespace HASS.Integrations
 {
     abstract internal class IntegrationBase<ConfigurationType, ViewModelType> : IIntegration
         where ConfigurationType : IConfigurationObject, new()

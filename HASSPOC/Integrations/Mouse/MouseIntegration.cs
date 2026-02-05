@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace HASSPOC.Integrations.Mouse;
+namespace HASS.Integrations.Mouse;
 
 internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfigurationViewModel>
 {

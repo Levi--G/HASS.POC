@@ -3,17 +3,17 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Splat;
 
-using HASSPOC.ViewModels;
-using HASSPOC.Views;
-using HASSPOC.Integrations;
-using HASSPOC.Integrations.Mouse;
-using HASSPOC.Services;
+using HASS.ViewModels;
+using HASS.Views;
+using HASS.Integrations;
+using HASS.Integrations.Mouse;
+using HASS.Services;
 using System.Reflection;
 using System.Linq;
 using System;
-using HASSPOC.Extensions;
+using HASS.Extensions;
 
-namespace HASSPOC;
+namespace HASS;
 
 public partial class App : Application
 {

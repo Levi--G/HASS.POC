@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace HASSPOC.Integrations.Mouse;
+namespace HASS.Integrations.Mouse;
 
 internal partial class Win32Api
 {

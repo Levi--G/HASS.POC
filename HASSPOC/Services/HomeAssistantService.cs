@@ -1,4 +1,4 @@
-﻿using HASSPOC.Entities;
+﻿using HASS.Entities;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HASSPOC.Services
+namespace HASS.Services
 {
     internal class HomeAssistantService
     {

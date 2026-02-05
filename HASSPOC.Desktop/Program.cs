@@ -3,7 +3,7 @@
 using Avalonia;
 using ReactiveUI.Avalonia;
 
-namespace HASSPOC.Desktop;
+namespace HASS.Desktop;
 
 class Program
 {

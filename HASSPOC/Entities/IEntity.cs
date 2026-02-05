@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HASSPOC.Entities
+namespace HASS.Entities
 {
     internal interface IEntity
     {

@@ -1,4 +1,4 @@
-﻿namespace HASSPOC.Integrations.Mouse;
+﻿namespace HASS.Integrations.Mouse;
 
 internal class MouseConfiguration : IConfigurationObject
 {

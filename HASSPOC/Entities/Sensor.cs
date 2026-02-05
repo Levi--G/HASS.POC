@@ -1,36 +1,37 @@
-﻿using HASSPOC.Services;
+﻿using HASS.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HASSPOC.Entities
+namespace HASS.Entities
 {
     internal class Sensor : IEntity
     {
-        public string? Value { get; set { field = value; Publish(); } }
-
-        string topic;
+        public string? Value { get; set { if (value != field) { field = value; Publish(); } } }
 
         MQTTService MQTT;
+        private readonly SensorDiscovery discovery;
 
-        public Sensor(MQTTService mQTT, string topic)
+        public Sensor(MQTTService mQTT, SensorDiscovery discovery)
         {
             MQTT = mQTT;
-            this.topic = topic;
+            this.discovery = discovery;
         }
 
         public void Publish()
         {
-            MQTT.Publish(topic, Value);
+            MQTT.Publish(discovery.state_topic, Value);
         }
 
         public object GetDiscoveryComponent()
         {
-            return new SensorDiscovery ("","","","");
+            return discovery;
         }
 
-        public record SensorDiscovery(string device_class, string unit_of_measurement, string unique_id, string state_topic, string p = "sensor");
+        public record SensorDiscovery(string unique_id, string state_topic, DeviceClass? device_class, string? unit_of_measurement, bool? enabled_by_default,
+            int? expire_after, bool? force_update, string? icon, string? name, string[]? options, int? suggested_display_precision, StateClass? state_class,
+            string p = "sensor");
     }
 }

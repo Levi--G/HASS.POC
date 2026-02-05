@@ -1,15 +1,15 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using HASSPOC.Integrations;
-using HASSPOC.ViewModels;
-using HASSPOC.Views;
+using HASS.Integrations;
+using HASS.ViewModels;
+using HASS.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HASSPOC.Services
+namespace HASS.Services
 {
     public class IntegrationViewLocator : IDataTemplate
     {

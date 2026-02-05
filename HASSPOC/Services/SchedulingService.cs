@@ -1,6 +1,6 @@
 ﻿using SharpSchedule;
 
-namespace HASSPOC.Services
+namespace HASS.Services
 {
     internal class SchedulingService : IDisposable
     {

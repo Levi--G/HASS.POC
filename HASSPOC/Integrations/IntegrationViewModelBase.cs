@@ -1,7 +1,7 @@
 ﻿using DynamicData.Binding;
-using HASSPOC.ViewModels;
+using HASS.ViewModels;
 
-namespace HASSPOC.Integrations
+namespace HASS.Integrations
 {
     internal abstract partial class IntegrationViewModelBase<ConfigurationType> : ViewModelBase, IIntegrationViewModel
         where ConfigurationType : class, IConfigurationObject, new()

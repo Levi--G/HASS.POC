@@ -1,4 +1,4 @@
-﻿namespace HASSPOC.Integrations
+﻿namespace HASS.Integrations
 {
     internal interface IIntegration
     {

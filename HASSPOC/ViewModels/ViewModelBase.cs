@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace HASSPOC.ViewModels;
+namespace HASS.ViewModels;
 
 public class ViewModelBase : ReactiveObject
 {

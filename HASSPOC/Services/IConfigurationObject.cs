@@ -1,7 +1,7 @@
-﻿using HASSPOC.Integrations.Mouse;
+﻿using HASS.Integrations.Mouse;
 using System.Text.Json.Serialization;
 
-namespace HASSPOC.Services
+namespace HASS.Services
 {
     /// <summary>
     /// Used for objects to be stored by the ConfigurationService
