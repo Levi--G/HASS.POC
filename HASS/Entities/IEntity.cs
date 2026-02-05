@@ -8,5 +8,6 @@ namespace HASS.Entities
 {
     internal interface IEntity
     {
+        string UniqueId { get; }
     }
 }

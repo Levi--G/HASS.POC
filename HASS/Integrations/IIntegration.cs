@@ -8,6 +8,11 @@
         public string Name { get; }
 
         /// <summary>
+        /// A unique short code
+        /// </summary>
+        public string Code { get; }
+
+        /// <summary>
         /// The description of the integration
         /// </summary>
         public string Description { get; }

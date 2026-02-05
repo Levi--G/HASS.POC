@@ -57,6 +57,7 @@ public partial class App : Application
         //load general services here
 
         AppLocator.CurrentMutable.RegisterConstant(new ConfigurationService());
+        AppLocator.CurrentMutable.RegisterConstant(new AppSettingsService());
         AppLocator.CurrentMutable.RegisterLazySingleton(() => new MQTTService());
         AppLocator.CurrentMutable.RegisterLazySingleton(() => new HomeAssistantService());
         AppLocator.CurrentMutable.RegisterLazySingleton(() => new LocalizationService());

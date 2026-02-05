@@ -15,7 +15,7 @@ namespace HASS.Services
             t.Enabled = true; //demostration purposes
             return t;
         }
-        public void StoreConfig<T>(T config) where T : IConfigurationObject, new()
+        public void SaveConfig<T>(T config) where T : IConfigurationObject, new()
         {
             //todo save in json
         }

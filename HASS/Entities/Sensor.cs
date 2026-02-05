@@ -9,6 +9,8 @@ namespace HASS.Entities
 {
     internal class Sensor : IEntity
     {
+        public string UniqueId => discovery.unique_id;
+
         public string? Value { get; set { if (value != field) { field = value; Publish(); } } }
 
         MQTTService MQTT;

@@ -63,7 +63,7 @@ namespace HASS.Integrations
                     Deactivate();
                 }
                 configuration = config;
-                ConfigurationService.StoreConfig(config);
+                ConfigurationService.SaveConfig(config);
                 if (wasactivated)
                 {
                     Activate();
