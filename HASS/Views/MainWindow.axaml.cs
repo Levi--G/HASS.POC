@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace HASSPOC.Views;
+namespace HASS.Views;
 
 public partial class MainWindow : Window
 {

@@ -21,9 +21,9 @@ namespace HASS.Services
 
         public Sensor RegisterSensor()
         {
-            var s = new Sensor(MQTT, "");
-            entities.Add(s);
-            return s;
+            //var s = new Sensor(MQTT, "");
+            //entities.Add(s);
+            return null;
         }
 
         public void Unregister(IEntity? entity)
