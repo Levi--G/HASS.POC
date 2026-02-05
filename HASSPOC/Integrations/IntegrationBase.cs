@@ -1,4 +1,6 @@
-﻿namespace HASSPOC.Integrations
+﻿using Avalonia.Controls;
+
+namespace HASSPOC.Integrations
 {
     abstract internal class IntegrationBase<ConfigurationType, ViewModelType> : IIntegration
         where ConfigurationType : IConfigurationObject, new()
@@ -67,6 +69,15 @@
                     Activate();
                 }
             }
+        }
+
+        protected static void Register<I, VM, V>()
+            where I : IIntegration, new()
+            where VM : IIntegrationViewModel, new()
+            where V : Control, new()
+        {
+            AppLocator.CurrentMutable.RegisterLazySingleton<IIntegration>(() => new I());
+            AppLocator.Current.GetRequiredService<IntegrationViewLocator>().Register(typeof(VM), () => new V());
         }
     }
 }

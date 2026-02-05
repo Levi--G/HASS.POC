@@ -1,4 +1,6 @@
-﻿namespace HASSPOC.Integrations.Mouse;
+﻿using System.Runtime.CompilerServices;
+
+namespace HASSPOC.Integrations.Mouse;
 
 internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfigurationViewModel>
 {
@@ -7,8 +9,10 @@ internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfi
         if (Environment.OSVersion.Platform == PlatformID.Win32NT)
         {
             //example only supported on windows
-            AppLocator.CurrentMutable.RegisterLazySingleton<IIntegration>(() => new MouseIntegration());
-            AppLocator.Current.GetRequiredService<IntegrationViewLocator>().Register(typeof(MouseConfigurationViewModel), () => new MouseConfigurationView());
+            Register<MouseIntegration, MouseConfigurationViewModel, MouseConfigurationView>();
+            //alternative:
+            //AppLocator.CurrentMutable.RegisterLazySingleton<IIntegration>(() => new MouseIntegration());
+            //AppLocator.Current.GetRequiredService<IntegrationViewLocator>().Register(typeof(MouseConfigurationViewModel), () => new MouseConfigurationView());
         }
     }
 
