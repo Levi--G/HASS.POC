@@ -32,8 +32,8 @@ internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfi
     protected override void ActivateIntegration()
     {
         var ha = AppLocator.Current.GetRequiredService<HomeAssistantService>();
-        X = ha.RegisterSensor(Code, "MouseX");
-        Y = ha.RegisterSensor(Code, "MouseY");
+        X = ha.RegisterSensor(Code, "MouseX", unit_of_measurement:"px", icon: "mdi:cursor-default", suggested_display_precision: 0);
+        Y = ha.RegisterSensor(Code, "MouseY", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
         var sc = AppLocator.Current.GetRequiredService<SchedulingService>();
         updateTask = sc.Schedule(UpdateSensors, DateTime.Now, TimeSpan.FromSeconds(configuration.UpdateIntervals));
     }

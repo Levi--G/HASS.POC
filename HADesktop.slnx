@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="HADesktop.CLI/HADesktop.CLI.csproj" Id="45bdd71c-b01b-43ea-b19b-994f649baf25" />
   <Project Path="HADesktop.Desktop/HADesktop.Desktop.csproj" />
   <Project Path="HADesktop/HADesktop.csproj" />
 </Solution>

@@ -15,7 +15,6 @@ namespace HADesktop
         void RegisterAppServices()
         {
             //load general services here
-
             AppLocator.CurrentMutable.RegisterConstant(new ConfigurationService());
             AppLocator.CurrentMutable.RegisterConstant(new AppSettingsService());
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new MQTTService());

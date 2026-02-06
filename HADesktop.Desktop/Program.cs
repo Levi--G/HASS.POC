@@ -1,8 +1,6 @@
 ﻿using Avalonia;
-using HADesktop.Extensions;
 using ReactiveUI.Avalonia;
 using System;
-using System.Linq;
 
 namespace HADesktop.Desktop;
 
@@ -14,18 +12,8 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        if (args.Contains("-c", StringComparison.OrdinalIgnoreCase) || args.Contains("--console", StringComparison.OrdinalIgnoreCase))
-        {
-            //start console mode
-            var app = new HaDesktopApp();
-            app.Startup();
-            //TODO
-        }
-        else
-        {
-            BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
-        }
+        BuildAvaloniaApp()
+        .StartWithClassicDesktopLifetime(args);
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
