@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="HASS.Desktop/HADesktop.Desktop.csproj" />
+  <Project Path="HASS/HADesktop.csproj" />
+</Solution>

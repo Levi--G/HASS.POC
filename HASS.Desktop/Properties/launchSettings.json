@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "HASS.Desktop": {
+      "commandName": "Project"
+    },
+    "HASS.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "-c"
+    }
+  }
+}
