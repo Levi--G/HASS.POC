@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "HADesktop.Desktop": {
+      "commandName": "Project"
+    },
+    "HADesktop.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "-c"
+    }
+  }
+}
