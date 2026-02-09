@@ -77,11 +77,21 @@ namespace HADesktop.Integrations
 
         protected static void Register<I, VM, V>()
             where I : IIntegration, new()
-            where VM : IIntegrationViewModel, new()
+            where VM : IIntegrationViewModel
             where V : Control, new()
         {
             AppLocator.CurrentMutable.RegisterLazySingleton<IIntegration>(() => new I());
             AppLocator.Current.GetRequiredService<IntegrationViewLocator>().Register(typeof(VM), () => new V());
+        }
+
+        public async Task Enable()
+        {
+
+        }
+
+        public async Task Disable()
+        {
+
         }
     }
 }

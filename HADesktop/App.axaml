@@ -1,10 +1,26 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="HADesktop.App"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:semi="https://irihi.tech/semi"
+			 xmlns:u-semi="https://irihi.tech/ursa/themes/semi"
+			 x:Class="HADesktop.App"
+			 RequestedThemeVariant="Default">
+	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	<TrayIcon.Icons>
+		<TrayIcons>
+			<TrayIcon Icon="/Assets/avalonia-logo.ico"
+					  ToolTipText="Avalonia Tray Icon ToolTip"
+					  Clicked="Tray_Click" >
+				<TrayIcon.Menu>
+					<NativeMenu>
+						<NativeMenuItem Header="Open" Click="Tray_Click"   />
+						<NativeMenuItem Header="Exit" Click="Exit_Click"  />
+					</NativeMenu>
+				</TrayIcon.Menu>
+			</TrayIcon>
+		</TrayIcons>
+	</TrayIcon.Icons>
+	<Application.Styles>
+		<semi:SemiTheme Locale="en-US" />
+		<u-semi:SemiTheme Locale="en-US"/>
+	</Application.Styles>
 </Application>

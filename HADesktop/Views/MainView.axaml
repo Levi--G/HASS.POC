@@ -1,16 +1,62 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:HADesktop.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="HADesktop.Views.MainView"
-             x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:HADesktop.ViewModels"
+			 xmlns:u="https://irihi.tech/ursa"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="HADesktop.Views.MainView"
+			 x:DataType="vm:MainViewModel">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainViewModel />
+	</Design.DataContext>
+	<Panel>
+		<!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+		<Panel IsVisible="{Binding ShowOverview}" Margin="20">
+			<WrapPanel ItemSpacing="10" LineSpacing="10">
+				<ItemsControl ItemsSource="{Binding ActiveIntegrations}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<HeaderedContentControl Theme="{StaticResource GroupBox}" CornerRadius="20" Width="400" MinHeight="220">
+								<HeaderedContentControl.Header>
+									<DockPanel>
+										<u:IconButton Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).ConfigureIntegrationCommand}" CommandParameter="{Binding}" DockPanel.Dock="Right" Icon="⚙" Content="Configure" Theme="{DynamicResource SolidIconButton}" Classes="Success" CornerRadius="16"/>
+										<TextBlock VerticalAlignment="Center" Text="{ Binding Name}" Classes="Header H6" Margin="0,0,20,0" TextWrapping="Wrap" />
+									</DockPanel>
+								</HeaderedContentControl.Header>
+								<TextBlock Text="{ Binding Description}" TextWrapping="Wrap"/>
+							</HeaderedContentControl>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</WrapPanel>
+			<Canvas>
+				<u:IconButton Command="{Binding AddModuleCommand}" Canvas.Right="20" Canvas.Bottom="20" Icon="➕" Content="Add Module" Theme="{DynamicResource SolidIconButton}" Classes="Large" CornerRadius="20"/>
+			</Canvas>
+		</Panel>
+		<u:LoadingContainer IsLoading="{Binding SelectedIntegrationConfig.IsLoading}"
+							LoadingMessage="Loading..."  IsVisible="{Binding ShowConfig}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+			<Panel Margin="20">
+				<HeaderedContentControl Theme="{StaticResource GroupBox}">
+					<HeaderedContentControl.Header>
+						<DockPanel>
+							<StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+								<u:IconButton Command="{Binding SaveModuleCommand}" IsVisible="{Binding SelectedIntegrationConfig.IsDirty}" Icon="💾" Content="Save" Theme="{DynamicResource SolidIconButton}" CornerRadius="16"/>
+								<u:IconButton Command="{Binding UndoModuleCommand}" IsVisible="{Binding SelectedIntegrationConfig.IsDirty}" Icon="↺" Content="Undo" Theme="{DynamicResource SolidIconButton}" Classes="Warning" CornerRadius="16"/>
+								<u:IconButton Command="{Binding ReturnModuleCommand}" Icon="←" Content="Back" Theme="{DynamicResource SolidIconButton}" Classes="Success" CornerRadius="16"/>
+								<u:IconButton Command="{Binding DisableModuleCommand}" Icon="❌" Content="Disable" Theme="{DynamicResource SolidIconButton}" Classes="Danger" CornerRadius="16"/>
+							</StackPanel>
+							<TextBlock Text="{ Binding SelectedIntegrationConfig.Integration.Name}" Classes="Header H6" />
+						</DockPanel>
+					</HeaderedContentControl.Header>
+					<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+						<ContentControl Content="{Binding SelectedIntegrationConfig}" />
+					</ScrollViewer>
+				</HeaderedContentControl>
+			</Panel>
+		</u:LoadingContainer>
+	</Panel>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 </UserControl>

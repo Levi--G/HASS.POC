@@ -10,4 +10,8 @@ internal class MouseConfiguration : IConfigurationObject
     public int UpdateIntervals { get; set; } = 30;
 
     public bool Enabled { get; set; }
+
+    public bool EnableXY { get; set; } = false;
+
+    public bool EnableActivity { get; set; } = true;
 }

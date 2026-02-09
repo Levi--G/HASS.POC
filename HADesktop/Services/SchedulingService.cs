@@ -1,4 +1,5 @@
-﻿using SharpSchedule;
+﻿using MQTTnet.Internal;
+using SharpSchedule;
 
 namespace HADesktop.Services
 {
@@ -96,7 +97,7 @@ namespace HADesktop.Services
 
         public void Cancel()
         {
-            cts.Cancel();
+            cts.TryCancel();
             scheduleItem.Dispose();
         }
     }

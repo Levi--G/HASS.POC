@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace HADesktop.Services
@@ -41,9 +43,25 @@ namespace HADesktop.Services
             }
         }
 
-        public void SendDiscovery()
+        public async Task SendDiscovery()
         {
             // combine the entities discoveries and send update to device/config topic
+            var cmps = new Dictionary<string, DiscoveryBase>();
+            foreach (var item in entities)
+            {
+                cmps.Add(item.UniqueId, item.GetDiscoveryComponent());
+            }
+            await MQTT.PublishAsync(GetDeviceTopic(), JsonSerializer.Serialize(
+                new HADiscovery(
+                    new DeviceDiscovery(AppSettingsService.Settings.DeviceName, Environment.OSVersion.Platform.ToString(), AppSettingsService.Settings.SerialNumber, Environment.OSVersion.VersionString),
+                    new OriginDiscovery(Constants.AppName, AppSettingsService.Version, Constants.SupportUrl),
+                    cmps),
+                new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }), true);
+        }
+
+        string GetDeviceTopic()
+        {
+            return $"homeassistant/device/HADesktop/{AppSettingsService.Settings.DeviceName}/config";
         }
 
         string GetTopic(string uniqueId)
@@ -65,5 +83,9 @@ namespace HADesktop.Services
             }
             return id;
         }
+        public record HADiscovery(DeviceDiscovery dev, OriginDiscovery o, Dictionary<string, DiscoveryBase> cmps);
+
+        public record DeviceDiscovery(string name, string model, string identifiers, string sw_version);
+        public record OriginDiscovery(string name, string sw, string url);
     }
 }

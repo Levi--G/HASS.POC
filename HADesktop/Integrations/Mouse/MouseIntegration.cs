@@ -1,9 +1,10 @@
-﻿using HADesktop.Entities;
+﻿using HADesktop;
+using HADesktop.Entities;
 using HADesktop.Extensions;
-using HADesktop.Services;
-using HADesktop;
 using HADesktop.Integrations.Mouse;
+using HADesktop.Services;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace HADesktop.Integrations.Mouse;
 
@@ -27,13 +28,23 @@ internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfi
 
     Sensor? X;
     Sensor? Y;
+    Sensor? Activity;
     ScheduledTask? updateTask;
+    Win32Api.LPPOINT? lastpoint;
+    Win32Api.LPPOINT? lastlastpoint;
 
     protected override void ActivateIntegration()
     {
         var ha = AppLocator.Current.GetRequiredService<HomeAssistantService>();
-        X = ha.RegisterSensor(Code, "MouseX", unit_of_measurement:"px", icon: "mdi:cursor-default", suggested_display_precision: 0);
-        Y = ha.RegisterSensor(Code, "MouseY", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
+        if (configuration.EnableXY)
+        {
+            X = ha.RegisterSensor(Code, "MouseX", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
+            Y = ha.RegisterSensor(Code, "MouseY", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
+        }
+        if (configuration.EnableActivity)
+        {
+            Activity = ha.RegisterSensor(Code, "MouseActivity", icon: "mdi:cursor-default");
+        }
         var sc = AppLocator.Current.GetRequiredService<SchedulingService>();
         updateTask = sc.Schedule(UpdateSensors, DateTime.Now, TimeSpan.FromSeconds(configuration.UpdateIntervals));
     }
@@ -45,6 +56,15 @@ internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfi
         {
             X?.Value = point.X.ToString();
             Y?.Value = point.Y.ToString();
+            if (Activity != null)
+            {
+                if (lastlastpoint != null && lastpoint != null)
+                {
+                    Activity.Value = (!lastpoint.Value.Equals(lastpoint.Value) || !lastpoint.Value.Equals(point)).ToString();
+                }
+                lastlastpoint = lastpoint;
+                lastpoint = point;
+            }
         }
         else
         {

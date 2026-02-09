@@ -5,6 +5,7 @@ using HADesktop.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,13 @@ namespace HADesktop
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new IntegrationViewLocator());
         }
 
+        async Task StartAppServices()
+        {
+            AppLocator.Current.GetRequiredService<AppSettingsService>().Load();
+            await AppLocator.Current.GetRequiredService<MQTTService>().StartConnect();
+            await AppLocator.Current.GetRequiredService<MQTTService>().ConnectNow();
+        }
+
         void RegisterAppIntegrations()
         {
             //Load all integrations one by one
@@ -41,7 +49,6 @@ namespace HADesktop
 
         void LoadAppIntegrations()
         {
-            AppLocator.Current.GetRequiredService<ConfigurationService>().LoadConfigurationFromDisk();
             foreach (var item in AppLocator.Current.GetServices<IIntegration>())
             {
                 item.Load();
@@ -54,8 +61,6 @@ namespace HADesktop
             {
                 item.Activate();
             }
-            //start integrations with running
-            AppLocator.Current.GetService<SchedulingService>()?.Start();
         }
 
         void StopAppIntegrations()
@@ -69,9 +74,10 @@ namespace HADesktop
             }
         }
 
-        void StopAppServices()
+        async Task StopAppServices()
         {
             //stop mqtt etc
+            await AppLocator.Current.GetRequiredService<MQTTService>().Disconnect();
         }
 
         void DisposeAppServices()
@@ -79,19 +85,22 @@ namespace HADesktop
             AppLocator.Current.GetService<SchedulingService>()?.Dispose();
         }
 
-        public void Startup()
+        public async Task Startup()
         {
             RegisterAppServices();
             RegisterAppIntegrations();
-
+            await StartAppServices();
             LoadAppIntegrations();
             StartAppIntegrations();
+            await AppLocator.Current.GetRequiredService<HomeAssistantService>().SendDiscovery();
+            //start integrations with running
+            AppLocator.Current.GetService<SchedulingService>()?.Start();
         }
 
-        public void Shutdown()
+        public async Task Shutdown()
         {
             StopAppIntegrations();
-            StopAppServices();
+            await StopAppServices();
             DisposeAppServices();
         }
     }

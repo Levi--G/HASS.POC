@@ -1,9 +1,4 @@
-﻿using HADesktop.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace HADesktop.Services
 {
@@ -11,19 +6,28 @@ namespace HADesktop.Services
     {
         private ConfigurationService configurationService = AppLocator.Current.GetRequiredService<ConfigurationService>();
 
-        public AppSettings Settings { get; private set; }
+        public AppSettings Settings => settings ?? throw new Exception("Application was not loaded before accessing settings");
+
+        AppSettings? settings;
+
+        public string Version { get; private set; } = "0.0.0";
 
         public AppSettingsService()
         {
-            Settings = configurationService.GetSavedConfigOrDefault<AppSettings>();
-            if (Settings.Enabled == false)
+        }
+
+        public void Load()
+        {
+            settings = configurationService.GetSavedConfigOrDefault<AppSettings>();
+            if (settings.Enabled == false)
             {
                 //first time loading, populate it with default values
-                Settings.Enabled = true;
-                Settings.DeviceName = Environment.MachineName;
-                Settings.Identifiers = new Guid().ToString();
+                settings.Enabled = true;
+                settings.DeviceName = Environment.MachineName;
+                settings.SerialNumber = Guid.NewGuid().ToString();
                 Save();
             }
+            Version = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? Version;
         }
 
         public void Save()
@@ -34,12 +38,22 @@ namespace HADesktop.Services
         public class AppSettings : IConfigurationObject
         {
             public bool Enabled { get; set; }
+            public bool IsOnboarding { get; set; } = true;
 
             public string DeviceName { get; set; } = "";
 
-            public string MQTTTopicBase { get; set; } = "HADesktop.Desktop";
+            public string MQTTTopicBase { get; set; } = "HADesktop";
 
-            public string Identifiers { get; set; } = "";
+            public string SerialNumber { get; set; } = "";
+
+            public string Server { get; set; } = Constants.DefaultHAHost;
+
+            public string Username { get; set; } = Constants.AppName;
+
+            public string Password { get; set; } = "";
+            public int Port { get; set; } = Constants.DefaultPort;
+            public bool TLS { get; set; } = Constants.DefaultTLS;
+            public bool AllowUntrustedTLS { get; set; } = Constants.DefaultTLS;
         }
     }
 }

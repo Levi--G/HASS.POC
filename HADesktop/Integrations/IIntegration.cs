@@ -2,7 +2,7 @@
 
 namespace HADesktop.Integrations
 {
-    internal interface IIntegration
+    public interface IIntegration
     {
         /// <summary>
         /// The name of the integration
@@ -48,5 +48,7 @@ namespace HADesktop.Integrations
         /// Deactivate the IIntegration and clean up
         /// </summary>
         public void Deactivate();
+        public Task Enable();
+        public Task Disable();
     }
 }
