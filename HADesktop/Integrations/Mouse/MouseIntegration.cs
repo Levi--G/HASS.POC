@@ -22,7 +22,7 @@ internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfi
         }
     }
 
-    protected override string LocalizationKey => "MouseIntegration";
+    protected override string LocalizationKey => "MouseModule";
 
     public override string Code => "MOU";
 

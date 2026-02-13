@@ -57,6 +57,7 @@ public partial class App : Application
             }
             desktop.MainWindow.Show();
             desktop.MainWindow.Activate();
+            (desktop.MainWindow.DataContext as MainViewModel)?.Activate();
         }
     }
 
@@ -70,7 +71,7 @@ public partial class App : Application
         }
     }
 
-    async void DoShutdown()
+    public async void DoShutdown()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

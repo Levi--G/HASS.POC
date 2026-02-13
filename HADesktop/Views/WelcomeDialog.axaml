@@ -1,0 +1,71 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:converters="using:Ursa.Converters"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:local="using:HADesktop"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:HADesktop.ViewModels"
+			 xmlns:l="clr-namespace:HADesktop.Localization"
+			 xmlns:u="https://irihi.tech/ursa"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+			 x:Class="HADesktop.WelcomeDialog"
+			 x:DataType="vm:WelcomeDialogViewModel">
+	<Design.DataContext>
+		<vm:WelcomeDialogViewModel/>
+	</Design.DataContext>
+	<Grid MinWidth="400" Margin="24" RowDefinitions="Auto, *, Auto">
+		<TextBlock Grid.Row="0" Margin="8" FontSize="16" FontWeight="600" Text="First time configuration" />
+		<u:Form Grid.Row="1" Margin="24" HorizontalAlignment="Stretch" LabelWidth="*" LabelPosition="Left" >
+			<u:FormItem Label="{l:Loc WelcomeDialog.Language}">
+				<ComboBox ItemsSource="{Binding Languages}" SelectedIndex="{Binding SelectedLanguageIndex}"/>
+			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.Host}" IsRequired="True" ToolTip.Tip="{l:Loc WelcomeDialog.Host.Tooltip}">
+				<TextBox Text="{Binding Host}"/>
+			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.UseTLS}" ToolTip.Tip="{l:Loc WelcomeDialog.UseTLS.Tooltip}">
+				<CheckBox IsChecked="{Binding UseTLS}"/>
+			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.UntrustedTLS}" ToolTip.Tip="{l:Loc WelcomeDialog.UntrustedTLS.Tooltip}">
+				<CheckBox IsChecked="{Binding UntrustedTLS}"/>
+			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.User}" IsRequired="True" ToolTip.Tip="{l:Loc WelcomeDialog.User.Tooltip}">
+				<TextBox Text="{Binding User}"/>
+			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.Password}" IsRequired="True" ToolTip.Tip="{l:Loc WelcomeDialog.Password.Tooltip}">
+				<TextBox Text="{Binding Password}" PasswordChar="•" RevealPassword="False"/>
+			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.DeviceName}" ToolTip.Tip="{l:Loc WelcomeDialog.DeviceName.Tooltip}">
+				<TextBox Text="{Binding DeviceName}"/>
+			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.SerialNumber}" ToolTip.Tip="{l:Loc WelcomeDialog.SerialNumber.Tooltip}">
+				<TextBox Text="{Binding SerialNumber}"/>
+			</u:FormItem>
+		</u:Form>
+		<StackPanel
+		Grid.Row="2"
+		HorizontalAlignment="Right"
+		Orientation="Horizontal"
+		Spacing="8">
+			<u:IconButton
+			Icon="❌"
+			Classes="Danger"
+			Command="{Binding ExitCommand}"
+			Content="{l:Loc WelcomeDialog.Exit}"
+			Theme="{DynamicResource SolidIconButton}"/>
+			<u:IconButton
+			Icon="🧪"
+			Classes="Warning"
+			Command="{Binding TestCommand}"
+			Content="{l:Loc WelcomeDialog.Test}"
+			Theme="{DynamicResource SolidIconButton}"
+			IsLoading="{Binding IsTesting}"/>
+			<u:IconButton
+			Icon="✔"
+			Classes="Success"
+			Command="{Binding ContinueCommand}"
+			Content="{l:Loc WelcomeDialog.Continue}"
+			Theme="{DynamicResource SolidIconButton}"
+			IsLoading="{Binding IsTesting}" />
+		</StackPanel>
+	</Grid>
+</UserControl>

@@ -11,6 +11,7 @@ namespace HADesktop.Services
         AppSettings? settings;
 
         public string Version { get; private set; } = "0.0.0";
+        public bool IsOnboarding { get => Settings.IsOnboarding; set { Settings.IsOnboarding = value; Save(); } }
 
         public AppSettingsService()
         {
@@ -54,6 +55,8 @@ namespace HADesktop.Services
             public int Port { get; set; } = Constants.DefaultPort;
             public bool TLS { get; set; } = Constants.DefaultTLS;
             public bool AllowUntrustedTLS { get; set; } = Constants.DefaultTLS;
+
+            public string Language { get; set; } = "English";
         }
     }
 }

@@ -1,16 +1,12 @@
-﻿using Avalonia.Utilities;
-using HADesktop.Integrations;
-using HADesktop.Integrations.Mouse;
+﻿using HADesktop.Integrations;
 using System.Collections.Generic;
 using System.Linq;
+using Ursa.Controls;
 
 namespace HADesktop.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    [Reactive]
-    public partial string Greeting { get; set; } = "Welcome to Avalonia!";
-
     [Reactive(nameof(ShowOverview), nameof(ShowConfig))]
     internal partial IIntegrationViewModel? SelectedIntegrationConfig { get; set; }
     public bool ShowOverview => SelectedIntegrationConfig == null;
@@ -18,15 +14,34 @@ public partial class MainViewModel : ViewModelBase
     [Reactive]
     internal partial List<IIntegration>? ActiveIntegrations { get; set; } = [];
 
+    AppSettingsService AppSettingsService = AppLocator.Current.GetRequiredService<AppSettingsService>();
+
     public MainViewModel()
     {
-        //Test();
+
+    }
+
+    public void Activate()
+    {
+        ShowWelcomeDialog();
         LoadActiveIntegrations();
     }
 
     void LoadActiveIntegrations()
     {
         ActiveIntegrations = AppLocator.Current.GetServices<IIntegration>().Where(i => i.Configuration.Enabled).ToList();
+    }
+
+    async void ShowWelcomeDialog()
+    {
+        if (AppSettingsService.Settings.IsOnboarding)
+        {
+            var result = await OverlayDialog.ShowCustomModal<WelcomeDialog, WelcomeDialogViewModel, object>(new WelcomeDialogViewModel(), options: new() { CanDragMove = false, IsCloseButtonVisible = false });
+            if ((result as bool?) != true)
+            {
+                (App.Current as App)?.DoShutdown();
+            }
+        }
     }
 
     [ReactiveCommand]
@@ -81,35 +96,5 @@ public partial class MainViewModel : ViewModelBase
             await t;
             vmb.Dispose();
         }
-    }
-
-    event Action? doupdate;
-    async void Test()
-    {
-        await Task.Run(async () =>
-        {
-            await Task.Delay(2000).ConfigureAwait(false);
-            var intgr = AppLocator.Current.GetService<IIntegration>();
-            SelectedIntegrationConfig = intgr.ConfigurationViewModel;
-            await SelectedIntegrationConfig.Load();
-            SelectedIntegrationConfig.Activate();
-            //doupdate += VMB.Update;
-            Greeting = "1";
-            //await Task.Delay(2000).ConfigureAwait(false);
-            //VMB = new MouseConfigurationViewModel();
-            //await VMB.Load();
-            //VMB.Activate();
-            //doupdate += VMB.Update;
-            //Greeting = "2";
-            //await Task.Delay(2000).ConfigureAwait(false);
-            //VMB = new MouseConfigurationViewModel();
-            //await VMB.Load();
-            //VMB.Activate();
-            //doupdate += VMB.Update;
-            //Greeting = "3";
-            //await Task.Delay(2000).ConfigureAwait(false);
-
-            //doupdate?.Invoke();
-        });
     }
 }

@@ -16,6 +16,7 @@ namespace HADesktop
         void RegisterAppServices()
         {
             //load general services here
+            AppLocator.CurrentMutable.RegisterConstant(this);
             AppLocator.CurrentMutable.RegisterConstant(new ConfigurationService());
             AppLocator.CurrentMutable.RegisterConstant(new AppSettingsService());
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new MQTTService());
@@ -28,8 +29,11 @@ namespace HADesktop
         async Task StartAppServices()
         {
             AppLocator.Current.GetRequiredService<AppSettingsService>().Load();
-            await AppLocator.Current.GetRequiredService<MQTTService>().StartConnect();
-            await AppLocator.Current.GetRequiredService<MQTTService>().ConnectNow();
+            if (!AppLocator.Current.GetRequiredService<AppSettingsService>().Settings.IsOnboarding)
+            {
+                await AppLocator.Current.GetRequiredService<MQTTService>().StartConnect();
+                await AppLocator.Current.GetRequiredService<MQTTService>().ConnectNow();
+            }
         }
 
         void RegisterAppIntegrations()
@@ -95,6 +99,13 @@ namespace HADesktop
             await AppLocator.Current.GetRequiredService<HomeAssistantService>().SendDiscovery();
             //start integrations with running
             AppLocator.Current.GetService<SchedulingService>()?.Start();
+        }
+
+        public async Task StartupInDesignMode()
+        {
+            RegisterAppServices();
+            RegisterAppIntegrations();
+            AppLocator.Current.GetRequiredService<AppSettingsService>().Load();
         }
 
         public async Task Shutdown()

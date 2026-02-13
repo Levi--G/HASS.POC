@@ -9,11 +9,6 @@ internal partial class MouseConfigurationViewModel : IntegrationViewModelBase<Mo
     [Reactive]
     public partial int UpdateIntervals { get; set; }
 
-    public void Update()
-    {
-        UpdateIntervals += 1;
-    }
-
     protected override void Activate(CompositeDisposable disposables)
     {
         this.WhenAnyPropertyChanged(nameof(UpdateIntervals)).Subscribe(s => IsDirty = true);
