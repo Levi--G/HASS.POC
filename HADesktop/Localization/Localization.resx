@@ -128,7 +128,7 @@
     <value>Serial number</value>
   </data>
   <data name="WelcomeDialog.Host.Tooltip" xml:space="preserve">
-    <value>The hostname of the MQTT server/HA server and the port host:port usually homeassistant.local:1883 or homeassistant.local:8883</value>
+    <value>The hostname of the MQTT server/HA server usually homeassistant.local</value>
   </data>
   <data name="WelcomeDialog.UseTLS.Tooltip" xml:space="preserve">
     <value>Use encrypted traffic (recommended) use port 8883</value>
@@ -177,5 +177,14 @@
   </data>
   <data name="MainView.Disable" xml:space="preserve">
     <value>Disable</value>
+  </data>
+  <data name="WelcomeDialog.Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="WelcomeDialog.Port.Tooltip" xml:space="preserve">
+    <value>The port to be used, usually 1883 or 8883 (with TLS)</value>
+  </data>
+  <data name="MainView.Modules" xml:space="preserve">
+    <value>Modules</value>
   </data>
 </root>

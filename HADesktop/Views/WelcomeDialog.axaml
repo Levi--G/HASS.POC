@@ -22,6 +22,9 @@
 			<u:FormItem Label="{l:Loc WelcomeDialog.Host}" IsRequired="True" ToolTip.Tip="{l:Loc WelcomeDialog.Host.Tooltip}">
 				<TextBox Text="{Binding Host}"/>
 			</u:FormItem>
+			<u:FormItem Label="{l:Loc WelcomeDialog.Port}" IsRequired="True" ToolTip.Tip="{l:Loc WelcomeDialog.Port.Tooltip}">
+				<NumericUpDown Value="{Binding Port}"/>
+			</u:FormItem>
 			<u:FormItem Label="{l:Loc WelcomeDialog.UseTLS}" ToolTip.Tip="{l:Loc WelcomeDialog.UseTLS.Tooltip}">
 				<CheckBox IsChecked="{Binding UseTLS}"/>
 			</u:FormItem>

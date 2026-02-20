@@ -106,6 +106,15 @@ namespace HADesktop.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modules.
+        /// </summary>
+        public static string MainView_Modules {
+            get {
+                return ResourceManager.GetString("MainView.Modules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string MainView_Save {
@@ -187,7 +196,7 @@ namespace HADesktop.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The hostname of the MQTT server/HA server and the port host:port usually homeassistant.local:1883 or homeassistant.local:8883.
+        ///   Looks up a localized string similar to The hostname of the MQTT server/HA server usually homeassistant.local.
         /// </summary>
         public static string WelcomeDialog_Host_Tooltip {
             get {
@@ -219,6 +228,24 @@ namespace HADesktop.Localization {
         public static string WelcomeDialog_Password_Tooltip {
             get {
                 return ResourceManager.GetString("WelcomeDialog.Password.Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port.
+        /// </summary>
+        public static string WelcomeDialog_Port {
+            get {
+                return ResourceManager.GetString("WelcomeDialog.Port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The port to be used, usually 1883 or 8883 (with TLS).
+        /// </summary>
+        public static string WelcomeDialog_Port_Tooltip {
+            get {
+                return ResourceManager.GetString("WelcomeDialog.Port.Tooltip", resourceCulture);
             }
         }
         

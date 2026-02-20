@@ -41,6 +41,12 @@ public partial class MainViewModel : ViewModelBase
             {
                 (App.Current as App)?.DoShutdown();
             }
+            else
+            {
+                AppSettingsService.Settings.IsOnboarding = false;
+                AppSettingsService.Save();
+                await AppLocator.Current.GetRequiredService<MQTTService>().StartConnect();
+            }
         }
     }
 

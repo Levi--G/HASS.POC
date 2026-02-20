@@ -11,8 +11,10 @@ public partial class WelcomeDialogViewModel : ViewModelBase, IDialogContext
     WindowNotificationManager? NotificationManager = AppLocator.Current.GetService<WindowNotificationManager>();
     LocalizationService LocalizationService => AppLocator.Current.GetRequiredService<LocalizationService>();
     AppSettingsService AppSettingsService => AppLocator.Current.GetRequiredService<AppSettingsService>();
-    [Reactive] public partial string Language { get; set; }
+    MQTTService MQTTService => AppLocator.Current.GetRequiredService<MQTTService>();
+    //[Reactive] public partial string Language { get; set; }
     [Reactive] public partial string Host { get; set; }
+    [Reactive] public partial int Port { get; set; }
     [Reactive] public partial bool UseTLS { get; set; }
     [Reactive] public partial bool UntrustedTLS { get; set; }
     [Reactive] public partial string User { get; set; }
@@ -27,6 +29,7 @@ public partial class WelcomeDialogViewModel : ViewModelBase, IDialogContext
         Languages = LocalizationService.Languages.Select(l => l.Name).ToArray();
         SelectedLanguageIndex = Languages.IndexOf(LocalizationService.CurrentLanguage.Name);
         Host = AppSettingsService.Settings.Server;
+        Port = AppSettingsService.Settings.Port;
         UseTLS = AppSettingsService.Settings.TLS;
         UntrustedTLS = AppSettingsService.Settings.AllowUntrustedTLS;
         User = AppSettingsService.Settings.Username;
@@ -51,11 +54,19 @@ public partial class WelcomeDialogViewModel : ViewModelBase, IDialogContext
 
     async Task<bool> TestConnection()
     {
-        //todo
+        AppSettingsService.Settings.Server = Host;
+        AppSettingsService.Settings.Port = Port;
+        AppSettingsService.Settings.TLS = UseTLS;
+        AppSettingsService.Settings.AllowUntrustedTLS = UntrustedTLS;
+        AppSettingsService.Settings.Username = User;
+        AppSettingsService.Settings.Password = Password;
+        AppSettingsService.Settings.DeviceName = DeviceName;
+        AppSettingsService.Settings.SerialNumber = SerialNumber;
+
         IsTesting = true;
-        await Task.Delay(2000);
+        var result = await MQTTService.TestConnection();
         IsTesting = false;
-        return false;
+        return result;
     }
 
     [ReactiveCommand]

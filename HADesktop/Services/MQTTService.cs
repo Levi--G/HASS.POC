@@ -26,6 +26,21 @@ namespace HADesktop.Services
             client = mqttFactory.CreateMqttClient();
         }
 
+        void CreateOptions()
+        {
+            mqttClientOptions = new MqttClientOptionsBuilder()
+                .WithTcpServer(appSettingsService.Settings.Server, appSettingsService.Settings.Port)
+                .WithTlsOptions(b =>
+                {
+                    b.UseTls(appSettingsService.Settings.TLS);
+                    b.WithAllowUntrustedCertificates(appSettingsService.Settings.AllowUntrustedTLS);
+                    b.WithCertificateValidationHandler(MqttClientDefaultCertificateValidationHandler.Handle);
+                    //b.WithCertificateValidationHandler(e => { return true; });
+                }/*new MqttClientTlsOptions() { UseTls = appSettingsService.Settings.TLS, AllowUntrustedCertificates = appSettingsService.Settings.AllowUntrustedTLS, CertificateValidationHandler }*/)
+                .WithCredentials(appSettingsService.Settings.Username, appSettingsService.Settings.Password)
+                .Build();
+        }
+
         public async Task StartConnect()
         {
             try
@@ -34,17 +49,7 @@ namespace HADesktop.Services
                 {
                     await Disconnect();
                 }
-                mqttClientOptions = new MqttClientOptionsBuilder()
-                    .WithTcpServer(appSettingsService.Settings.Server, appSettingsService.Settings.Port)
-                    .WithTlsOptions(b =>
-                    {
-                        b.UseTls(appSettingsService.Settings.TLS);
-                        b.WithAllowUntrustedCertificates(appSettingsService.Settings.AllowUntrustedTLS);
-                        b.WithCertificateValidationHandler(MqttClientDefaultCertificateValidationHandler.Handle);
-                        //b.WithCertificateValidationHandler(e => { return true; });
-                    }/*new MqttClientTlsOptions() { UseTls = appSettingsService.Settings.TLS, AllowUntrustedCertificates = appSettingsService.Settings.AllowUntrustedTLS, CertificateValidationHandler }*/)
-                    .WithCredentials(appSettingsService.Settings.Username, appSettingsService.Settings.Password)
-                    .Build();
+                CreateOptions();
                 reconnectTask = schedulingService.Schedule(Reconnect, DateTime.Now, TimeSpan.FromSeconds(30));
             }
             catch (Exception ex)
@@ -53,17 +58,39 @@ namespace HADesktop.Services
             }
         }
 
-        public async Task ConnectNow(int mstimeout = 5000)
+        public async Task<bool> TestConnection()
         {
             try
             {
-                var cts = new CancellationTokenSource(mstimeout);
-                await Reconnect(cts.Token);
+                if (client.IsConnected)
+                {
+                    await Disconnect();
+                }
+                CreateOptions();
+                var result = await ConnectNow();
+                await Disconnect();
+                return result;
             }
             catch (Exception ex)
             {
                 //TODO
             }
+            return false;
+        }
+
+        public async Task<bool> ConnectNow(int mstimeout = 5000)
+        {
+            try
+            {
+                var cts = new CancellationTokenSource(mstimeout);
+                await Reconnect(cts.Token);
+                return client.IsConnected;
+            }
+            catch (Exception ex)
+            {
+                //TODO
+            }
+            return false;
         }
 
         async ValueTask Reconnect(CancellationToken token)
@@ -147,9 +174,12 @@ namespace HADesktop.Services
             {
                 reconnectTask?.Cancel();
                 reconnectTask = null;
-                if (client.IsConnected)
+                using (await clientKey.LockAsync())
                 {
-                    await client.DisconnectAsync(new MqttClientDisconnectOptions(), CancellationToken.None);
+                    if (client.IsConnected)
+                    {
+                        await client.DisconnectAsync(new MqttClientDisconnectOptions(), CancellationToken.None);
+                    }
                 }
             }
             catch (Exception ex)

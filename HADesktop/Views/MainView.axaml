@@ -14,33 +14,36 @@
 		<vm:MainViewModel />
 	</Design.DataContext>
 	<Panel>
-        <Panel.Styles>
-            <Style Selector="Panel.Blur">
-                <Setter Property="Effect" Value="blur(10)" />
-            </Style>
-        </Panel.Styles>
+		<Panel.Styles>
+			<Style Selector="Panel.Blur">
+				<Setter Property="Effect" Value="blur(10)" />
+			</Style>
+		</Panel.Styles>
 		<u:OverlayDialogHost Name="Overlay" IsModalStatusReporter="True"/>
 		<Panel Classes.Blur="{Binding #Overlay.(u:OverlayDialogHost.IsInModalStatus)}" IsEnabled="{Binding !#Overlay.(u:OverlayDialogHost.IsInModalStatus)}">
 			<!--<u:OverlayDialogHost HostId="main" />-->
 			<!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
 			<Panel IsVisible="{Binding ShowOverview}" Margin="20">
-				<WrapPanel ItemSpacing="10" LineSpacing="10">
-					<ItemsControl ItemsSource="{Binding ActiveIntegrations}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<HeaderedContentControl Theme="{StaticResource GroupBox}" CornerRadius="20" Width="400" MinHeight="220">
-									<HeaderedContentControl.Header>
-										<DockPanel>
-											<u:IconButton Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).ConfigureIntegrationCommand}" CommandParameter="{Binding}" DockPanel.Dock="Right" Icon="⚙" Content="{l:Loc MainView.Configure}" Theme="{DynamicResource SolidIconButton}" Classes="Success" CornerRadius="16"/>
-											<TextBlock VerticalAlignment="Center" Text="{ Binding Name}" Classes="Header H6" Margin="0,0,20,0" TextWrapping="Wrap" />
-										</DockPanel>
-									</HeaderedContentControl.Header>
-									<TextBlock Text="{ Binding Description}" TextWrapping="Wrap"/>
-								</HeaderedContentControl>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-				</WrapPanel>
+				<StackPanel Orientation="Vertical">
+					<TextBlock Text="{l:Loc MainView.Modules}" FontSize="18"/>
+					<WrapPanel ItemSpacing="10" LineSpacing="10">
+						<ItemsControl ItemsSource="{Binding ActiveIntegrations}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<HeaderedContentControl Theme="{StaticResource GroupBox}" CornerRadius="20" Width="400" MinHeight="220">
+										<HeaderedContentControl.Header>
+											<DockPanel>
+												<u:IconButton Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).ConfigureIntegrationCommand}" CommandParameter="{Binding}" DockPanel.Dock="Right" Icon="⚙" Content="{l:Loc MainView.Configure}" Theme="{DynamicResource SolidIconButton}" Classes="Success" CornerRadius="16"/>
+												<TextBlock VerticalAlignment="Center" Text="{ Binding Name}" Classes="Header H6" Margin="0,0,20,0" TextWrapping="Wrap" />
+											</DockPanel>
+										</HeaderedContentControl.Header>
+										<TextBlock Text="{ Binding Description}" TextWrapping="Wrap"/>
+									</HeaderedContentControl>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</WrapPanel>
+				</StackPanel>
 				<Canvas>
 					<u:IconButton Command="{Binding AddModuleCommand}" Canvas.Right="20" Canvas.Bottom="20" Icon="➕" Content="{l:Loc MainView.AddModule}" Theme="{DynamicResource SolidIconButton}" Classes="Large" CornerRadius="20"/>
 				</Canvas>
