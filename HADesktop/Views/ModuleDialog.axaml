@@ -1,0 +1,30 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:converters="using:Ursa.Converters"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:local="using:HADesktop"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:HADesktop.ViewModels"
+			 xmlns:l="clr-namespace:HADesktop.Localization"
+			 xmlns:u="https://irihi.tech/ursa"
+			 mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="550"
+			 x:Class="HADesktop.ModuleDialog"
+			 x:DataType="vm:ModuleDialogViewModel">
+	<Design.DataContext>
+		<vm:ModuleDialogViewModel/>
+	</Design.DataContext>
+	<Grid Width="500" MaxHeight="900" Margin="24" RowDefinitions="Auto, Auto, *">
+		<TextBlock Grid.Row="0" Margin="8" FontSize="16" FontWeight="600" Text="ModuleDialog.Title" />
+		<TextBox Grid.Row="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Margin="8" Watermark="{l:Loc ModuleDialog.SearchPlaceholder}"/>
+		<ListBox Grid.Row="2" ItemsSource="{Binding FilteredIntegrations}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal" Spacing="8" ToolTip.Tip="{Binding Description}">
+						<TextBlock Text="{Binding Name}" FontWeight="600"/>
+						<TextBlock Text="{Binding Description}" Foreground="Gray"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+</UserControl>

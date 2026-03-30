@@ -20,6 +20,11 @@ namespace HADesktop.Integrations
         public string Description { get; }
 
         /// <summary>
+        /// Reflects if the integration is currently enabled in cofiguration
+        /// </summary>
+        public bool Enabled { get; }
+
+        /// <summary>
         /// The view containing the configuration elements
         /// </summary>
         public IIntegrationViewModel ConfigurationViewModel { get; }

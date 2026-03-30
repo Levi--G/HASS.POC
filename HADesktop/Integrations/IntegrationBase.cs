@@ -21,6 +21,7 @@ namespace HADesktop.Integrations
 
         public IConfigurationObject Configuration => configuration;
 
+        public bool Enabled => configuration.Enabled;
 
         protected ConfigurationType configuration = new();
         bool activated;
@@ -30,7 +31,7 @@ namespace HADesktop.Integrations
 
         public void Activate()
         {
-            if (configuration.Enabled && !activated)
+            if (Enabled && !activated)
             {
                 ActivateIntegration();
                 activated = true;

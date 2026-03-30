@@ -29,7 +29,7 @@ public partial class MainViewModel : ViewModelBase
 
     void LoadActiveIntegrations()
     {
-        ActiveIntegrations = AppLocator.Current.GetServices<IIntegration>().Where(i => i.Configuration.Enabled).ToList();
+        ActiveIntegrations = AppLocator.Current.GetServices<IIntegration>().Where(i => i.Enabled).ToList();
     }
 
     async void ShowWelcomeDialog()
@@ -61,7 +61,13 @@ public partial class MainViewModel : ViewModelBase
     [ReactiveCommand]
     private async void AddModule()
     {
-
+        var result = await OverlayDialog.ShowCustomModal<ModuleDialog, ModuleDialogViewModel, IIntegration>(new ModuleDialogViewModel(), options: new() { CanDragMove = false });
+        if (result != null)
+        {
+            //TODO add the module and reload
+            result.Enable();
+            LoadActiveIntegrations();
+        }
     }
 
     [ReactiveCommand]

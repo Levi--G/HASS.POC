@@ -40,6 +40,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Localization.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\ModuleDialog.axaml.cs">
+      <DependentUpon>ModuleDialog.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

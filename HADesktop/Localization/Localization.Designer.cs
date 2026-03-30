@@ -133,6 +133,24 @@ namespace HADesktop.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search....
+        /// </summary>
+        public static string ModuleDialog_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("ModuleDialog.SearchPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Module:.
+        /// </summary>
+        public static string ModuleDialog_Title {
+            get {
+                return ResourceManager.GetString("ModuleDialog.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Provides a mouse activity sensor and/or mouse position.
         /// </summary>
         public static string MouseModule_Description {
@@ -273,6 +291,15 @@ namespace HADesktop.Localization {
         public static string WelcomeDialog_Test {
             get {
                 return ResourceManager.GetString("WelcomeDialog.Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First time configuration.
+        /// </summary>
+        public static string WelcomeDialog_Title {
+            get {
+                return ResourceManager.GetString("WelcomeDialog.Title", resourceCulture);
             }
         }
         

@@ -14,7 +14,7 @@
 		<vm:WelcomeDialogViewModel/>
 	</Design.DataContext>
 	<Grid MinWidth="400" Margin="24" RowDefinitions="Auto, *, Auto">
-		<TextBlock Grid.Row="0" Margin="8" FontSize="16" FontWeight="600" Text="First time configuration" />
+		<TextBlock Grid.Row="0" Margin="8" FontSize="16" FontWeight="600" Text="{l:Loc WelcomeDialog.Title}" />
 		<u:Form Grid.Row="1" Margin="24" HorizontalAlignment="Stretch" LabelWidth="*" LabelPosition="Left" >
 			<u:FormItem Label="{l:Loc WelcomeDialog.Language}">
 				<ComboBox ItemsSource="{Binding Languages}" SelectedIndex="{Binding SelectedLanguageIndex}"/>

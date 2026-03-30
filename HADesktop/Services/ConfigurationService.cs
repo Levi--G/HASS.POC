@@ -93,7 +93,6 @@ namespace HADesktop.Services
             {
                 if (File.Exists(jsonLocation))
                 {
-                    //TODO write backup
                     var backupfile = Path.Combine(backupLocation, $"{DateTime.Now.ToString("yyyyMMdd HHmmss")}.json");
                     Directory.CreateDirectory(Path.GetDirectoryName(backupfile)!);
                     File.Move(jsonLocation, backupfile);
