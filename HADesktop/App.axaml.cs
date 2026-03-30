@@ -65,7 +65,7 @@ public partial class App : Application
     {
         await hassDesktopApp.Startup();
         DataTemplates.Add(AppLocator.Current.GetRequiredService<IntegrationViewLocator>());
-        if (AppLocator.Current.GetRequiredService<AppSettingsService>().Settings.IsOnboarding)
+        if (!Environment.GetCommandLineArgs().Contains("-m") || AppLocator.Current.GetRequiredService<AppSettingsService>().Settings.IsOnboarding)
         {
             OpenWindow();
         }

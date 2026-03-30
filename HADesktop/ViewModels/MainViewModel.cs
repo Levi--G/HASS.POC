@@ -65,7 +65,7 @@ public partial class MainViewModel : ViewModelBase
         if (result != null)
         {
             //TODO add the module and reload
-            result.Enable();
+            await result.Enable();
             LoadActiveIntegrations();
         }
     }

@@ -21,7 +21,6 @@ internal partial class MouseConfigurationViewModel : IntegrationViewModelBase<Mo
 
     protected override async ValueTask SetConfig(MouseConfiguration config)
     {
-        await Task.Delay(1000);
         UpdateIntervals = config.UpdateIntervals;
     }
 }

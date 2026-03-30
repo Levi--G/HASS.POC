@@ -87,12 +87,24 @@ namespace HADesktop.Integrations
 
         public async Task Enable()
         {
-
+            if (Enabled)
+            {
+                return;
+            }
+            configuration.Enabled = true;
+            ConfigurationService.SaveConfig(configuration);
+            await Task.Run(Activate);
         }
 
         public async Task Disable()
         {
-
+            if (!Enabled)
+            {
+                return;
+            }
+            configuration.Enabled = false;
+            ConfigurationService.SaveConfig(configuration);
+            await Task.Run(Deactivate);
         }
     }
 }

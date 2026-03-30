@@ -30,7 +30,7 @@ public partial class ModuleDialogViewModel : ViewModelBase, IDialogContext
         integrations.AddRange(AppLocator.Current.GetServices<IIntegration>().Where(i => !i.Enabled));
         var filter = this.WhenAnyValue(v => v.SearchText).Throttle(TimeSpan.FromMilliseconds(300)).Select<string?, Func<IIntegration, bool>>(s => i => s == null || i.Name.Contains(s, StringComparison.OrdinalIgnoreCase) || i.Description.Contains(s, StringComparison.OrdinalIgnoreCase));
         integrations.Connect().Filter(filter).Bind(out filteredIntegrations).Subscribe();
-        this.WhenAnyValue(v=>v.SelectedItem).Where(i => i != null).Subscribe(Selected);
+        this.WhenAnyValue(v => v.SelectedItem).Where(i => i != null).Subscribe(Selected);
     }
 
     public void Close()
