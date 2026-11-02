@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace HADesktop.Integrations.Mouse;
 
-internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfigurationViewModel>
+internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfigurationViewModel>, IIntegration
 {
     public static void Register()
     {
@@ -38,12 +38,12 @@ internal class MouseIntegration : IntegrationBase<MouseConfiguration, MouseConfi
         var ha = AppLocator.Current.GetRequiredService<HomeAssistantService>();
         if (configuration.EnableXY)
         {
-            X = ha.RegisterSensor(Code, "MouseX", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
-            Y = ha.RegisterSensor(Code, "MouseY", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
+            X = ha.RegisterSensor(Code,0, "MouseX", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
+            Y = ha.RegisterSensor(Code,0, "MouseY", unit_of_measurement: "px", icon: "mdi:cursor-default", suggested_display_precision: 0);
         }
         if (configuration.EnableActivity)
         {
-            Activity = ha.RegisterSensor(Code, "MouseActivity", icon: "mdi:cursor-default");
+            Activity = ha.RegisterSensor(Code,0, "MouseActivity", icon: "mdi:cursor-default");
         }
         var sc = AppLocator.Current.GetRequiredService<SchedulingService>();
         updateTask = sc.Schedule(UpdateSensors, DateTime.Now, TimeSpan.FromSeconds(configuration.UpdateIntervals));

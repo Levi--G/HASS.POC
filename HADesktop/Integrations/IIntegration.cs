@@ -5,24 +5,14 @@ namespace HADesktop.Integrations
     public interface IIntegration
     {
         /// <summary>
-        /// The name of the integration
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// A unique short code
-        /// </summary>
-        public string Code { get; }
-
-        /// <summary>
-        /// The description of the integration
-        /// </summary>
-        public string Description { get; }
-
-        /// <summary>
         /// Reflects if the integration is currently enabled in cofiguration
         /// </summary>
         public bool Enabled { get; }
+
+        /// <summary>
+        /// The index of the integration and its configuration
+        /// </summary>
+        public int Index { get; set; }
 
         /// <summary>
         /// The view containing the configuration elements
@@ -32,7 +22,7 @@ namespace HADesktop.Integrations
         /// <summary>
         /// The configuration object of the integration
         /// </summary>
-        public IConfigurationObject Configuration { get; }
+        public IConfigurationObject Configuration { get; set; }
 
         /// <summary>
         /// Load saved configuration from ConfigurationService if applicable

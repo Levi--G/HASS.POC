@@ -14,6 +14,32 @@ namespace HADesktop.Entities
 
         DiscoveryBase GetDiscoveryComponent();
     }
+    internal interface IPublishEntity : IEntity
+    {
+        event Action<IEntity>? OnRequestPublish;
+
+        void Publish(MQTTService MQTT);
+        void RequestPublish();
+    }
+    internal interface ISubscribeEntity : IEntity
+    {
+        event Action<IEntity>? OnStateChange;
+
+        void Subscribe(MQTTService MQTT);
+        void RequestPublish();
+    }
+    internal interface ILastWillEntity : IEntity
+    {
+        void SetLastWill(MQTTService MQTT);
+    }
+    internal interface IAvailabilityEntity : ILastWillEntity
+    {
+        event Action<IEntity>? OnRequestPublishAvailability;
+        bool Available { get; set; }
+
+        void PublishAvailability(MQTTService MQTT);
+        void RequestPublishAvailability();
+    }
 
     [JsonDerivedType(typeof(Sensor.SensorDiscovery))]
     record DiscoveryBase(string p);

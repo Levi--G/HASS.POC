@@ -7,25 +7,30 @@ using System.Threading.Tasks;
 
 namespace HADesktop.Entities
 {
-    internal class Sensor : IEntity
+    internal class Sensor : IPublishEntity
     {
         public string UniqueId => discovery.unique_id;
         public string Name => discovery.name;
 
-        public string? Value { get; set { if (value != field) { field = value; Publish(); } } }
+        public string? Value { get; set { if (value != field) { field = value; RequestPublish(); } } }
 
-        MQTTService MQTT;
         private readonly SensorDiscovery discovery;
 
-        public Sensor(MQTTService mQTT, SensorDiscovery discovery)
+        public event Action<IEntity>? OnRequestPublish;
+
+        public Sensor(SensorDiscovery discovery)
         {
-            MQTT = mQTT;
             this.discovery = discovery;
         }
 
-        public void Publish()
+        public void Publish(MQTTService MQTT)
         {
             MQTT.Publish(discovery.state_topic, Value);
+        }
+
+        public void RequestPublish()
+        {
+            OnRequestPublish?.Invoke(this);
         }
 
         public DiscoveryBase GetDiscoveryComponent()

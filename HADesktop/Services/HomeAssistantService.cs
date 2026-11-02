@@ -25,12 +25,12 @@ namespace HADesktop.Services
 
         List<IEntity> entities = new();
 
-        public Sensor RegisterSensor(string modulecode, string name, DeviceClass? device_class = null, string? unit_of_measurement = null, bool? enabled_by_default = null,
+        public Sensor RegisterSensor(string modulecode, int moduleindex, string name, DeviceClass? device_class = null, string? unit_of_measurement = null, bool? enabled_by_default = null,
             int? expire_after = null, bool? force_update = null, string? icon = null, string[]? options = null, int? suggested_display_precision = null, StateClass? state_class = null)
         {
-            var uni = GetUniqueId(modulecode, name);
+            var uni = GetUniqueId(modulecode, moduleindex, name);
             var topic = GetTopic(uni);
-            var s = new Sensor(MQTT, new(uni, topic, device_class, unit_of_measurement, enabled_by_default, expire_after, force_update, icon, name, options, suggested_display_precision, state_class));
+            var s = new Sensor(new(uni, topic, device_class, unit_of_measurement, enabled_by_default, expire_after, force_update, icon, name, options, suggested_display_precision, state_class));
             entities.Add(s);
             return s;
         }
@@ -61,7 +61,7 @@ namespace HADesktop.Services
 
         string GetDeviceTopic()
         {
-            return $"homeassistant/device/HADesktop/{AppSettingsService.Settings.DeviceName}/config";
+            return $"homeassistant/device/{AppSettingsService.Settings.MQTTTopicBase}/{AppSettingsService.Settings.DeviceName}/config";
         }
 
         string GetTopic(string uniqueId)
@@ -69,9 +69,9 @@ namespace HADesktop.Services
             return $"{AppSettingsService.Settings.MQTTTopicBase}/{AppSettingsService.Settings.DeviceName}/{uniqueId}";
         }
 
-        string GetUniqueId(string modulecode, string name)
+        string GetUniqueId(string modulecode, int moduleindex, string name)
         {
-            var id = new string((Constants.UniqueIdPrefix + modulecode + name).Replace(' ', '_').Replace('-', '_').Where(c => char.IsLetterOrDigit(c) || c == '_').ToArray());
+            var id = new string((Constants.UniqueIdPrefix + moduleindex + modulecode + name).Replace(' ', '_').Replace('-', '_').Where(c => char.IsLetterOrDigit(c) || c == '_').ToArray());
             if (entities.Any(e => e.UniqueId == id))
             {
                 int addition = 0;
