@@ -19,11 +19,16 @@ namespace HADesktop.Integrations
         protected HomeAssistantService HomeAssistantService => AppLocator.Current.GetRequiredService<HomeAssistantService>();
         protected SchedulingService SchedulingService => AppLocator.Current.GetRequiredService<SchedulingService>();
 
-        public IConfigurationObject Configuration => configuration;
-
-        public bool Enabled => configuration.Enabled;
+        public int Index { get; set; }
 
         protected ConfigurationType configuration = new();
+        public IConfigurationObject Configuration
+        {
+            get => configuration;
+            set => configuration = (ConfigurationType)value;
+        }
+
+        public bool Enabled => configuration.Enabled;
         bool activated;
 
         protected abstract void ActivateIntegration();
