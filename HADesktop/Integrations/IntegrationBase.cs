@@ -14,7 +14,7 @@ namespace HADesktop.Integrations
         public abstract string Code { get; }
         public IIntegrationViewModel ConfigurationViewModel => new ViewModelType() { Integration = this, Configuration = configuration };
 
-        protected ConfigurationService ConfigurationService => AppLocator.Current.GetRequiredService<ConfigurationService>();
+        protected AppSettingsService ConfigurationService => AppLocator.Current.GetRequiredService<AppSettingsService>();
         protected LocalizationService LocalizationService => AppLocator.Current.GetRequiredService<LocalizationService>();
         protected HomeAssistantService HomeAssistantService => AppLocator.Current.GetRequiredService<HomeAssistantService>();
         protected SchedulingService SchedulingService => AppLocator.Current.GetRequiredService<SchedulingService>();
@@ -50,34 +50,12 @@ namespace HADesktop.Integrations
                 activated = false;
             }
         }
-        public void Load()
+        public void Reactivate()
         {
-            var wasactivated = activated;
             if (activated)
             {
                 Deactivate();
-            }
-            configuration = ConfigurationService.GetSavedConfigOrDefault<ConfigurationType>();
-            if (wasactivated)
-            {
                 Activate();
-            }
-        }
-        public void Save(IConfigurationObject configuration)
-        {
-            if (configuration is ConfigurationType config)
-            {
-                var wasactivated = activated;
-                if (activated)
-                {
-                    Deactivate();
-                }
-                configuration = config;
-                ConfigurationService.SaveConfig(config);
-                if (wasactivated)
-                {
-                    Activate();
-                }
             }
         }
 
@@ -96,8 +74,7 @@ namespace HADesktop.Integrations
             {
                 return;
             }
-            configuration.Enabled = true;
-            ConfigurationService.SaveConfig(configuration);
+            ConfigurationService.ModifyConfig(() => configuration.Enabled = true);
             await Task.Run(Activate);
         }
 
@@ -107,8 +84,7 @@ namespace HADesktop.Integrations
             {
                 return;
             }
-            configuration.Enabled = false;
-            ConfigurationService.SaveConfig(configuration);
+            ConfigurationService.ModifyConfig(() => configuration.Enabled = false);
             await Task.Run(Deactivate);
         }
     }

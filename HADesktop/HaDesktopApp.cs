@@ -17,23 +17,13 @@ namespace HADesktop
         {
             //load general services here
             AppLocator.CurrentMutable.RegisterConstant(this);
-            AppLocator.CurrentMutable.RegisterConstant(new ConfigurationService());
+            //AppLocator.CurrentMutable.RegisterConstant(new ConfigurationService());
             AppLocator.CurrentMutable.RegisterConstant(new AppSettingsService());
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new MQTTService());
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new HomeAssistantService());
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new LocalizationService());
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new SchedulingService());
             AppLocator.CurrentMutable.RegisterLazySingleton(() => new IntegrationViewLocator());
-        }
-
-        async Task StartAppServices()
-        {
-            AppLocator.Current.GetRequiredService<AppSettingsService>().Load();
-            if (!AppLocator.Current.GetRequiredService<AppSettingsService>().Settings.IsOnboarding)
-            {
-                await AppLocator.Current.GetRequiredService<MQTTService>().StartConnect();
-                await AppLocator.Current.GetRequiredService<MQTTService>().ConnectNow();
-            }
         }
 
         void RegisterAppIntegrations()
@@ -51,20 +41,24 @@ namespace HADesktop
             //this can be replaced by a sourcegenerator, real easy to make, so there is 0 extra config.
         }
 
+        async Task StartAppServices()
+        {
+            AppLocator.Current.GetRequiredService<AppSettingsService>().Load();
+            if (!AppLocator.Current.GetRequiredService<AppSettingsService>().Settings.IsOnboarding)
+            {
+                await AppLocator.Current.GetRequiredService<MQTTService>().StartConnect();
+                await AppLocator.Current.GetRequiredService<MQTTService>().ConnectNow();
+            }
+        }
+
         void LoadAppIntegrations()
         {
-            foreach (var item in AppLocator.Current.GetServices<IIntegration>())
-            {
-                item.Load();
-            }
+            AppLocator.Current.GetRequiredService<AppSettingsService>().LoadIntegrations(AppLocator.Current.GetServices<IIntegrationRegistration>().ToList());
         }
 
         void StartAppIntegrations()
         {
-            foreach (var item in AppLocator.Current.GetServices<IIntegration>())
-            {
-                item.Activate();
-            }
+            AppLocator.Current.GetRequiredService<AppSettingsService>().GetIntegrations().ForEach(i => i.Activate());
         }
 
         void StopAppIntegrations()

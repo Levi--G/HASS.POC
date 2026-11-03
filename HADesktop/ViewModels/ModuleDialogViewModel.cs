@@ -14,21 +14,21 @@ public partial class ModuleDialogViewModel : ViewModelBase, IDialogContext
 {
     public event EventHandler<object?>? RequestClose;
 
-    SourceList<IIntegration> integrations = new();
+    SourceList<IIntegrationRegistration> integrations = new();
 
     [Reactive]
-    ReadOnlyObservableCollection<IIntegration> filteredIntegrations;
+    ReadOnlyObservableCollection<IIntegrationRegistration> filteredIntegrations;
 
     [Reactive]
     string? searchText;
 
     [Reactive]
-    IIntegration? selectedItem;
+    IIntegrationRegistration? selectedItem;
 
     public ModuleDialogViewModel()
     {
-        integrations.AddRange(AppLocator.Current.GetServices<IIntegration>().Where(i => !i.Enabled));
-        var filter = this.WhenAnyValue(v => v.SearchText).Throttle(TimeSpan.FromMilliseconds(300)).Select<string?, Func<IIntegration, bool>>(s => i => s == null || i.Name.Contains(s, StringComparison.OrdinalIgnoreCase) || i.Description.Contains(s, StringComparison.OrdinalIgnoreCase));
+        integrations.AddRange(AppLocator.Current.GetServices<IIntegrationRegistration>());
+        var filter = this.WhenAnyValue(v => v.SearchText).Throttle(TimeSpan.FromMilliseconds(300)).Select<string?, Func<IIntegrationRegistration, bool>>(s => i => s == null || i.Name.Contains(s, StringComparison.OrdinalIgnoreCase) || i.Description.Contains(s, StringComparison.OrdinalIgnoreCase));
         integrations.Connect().Filter(filter).Bind(out filteredIntegrations).Subscribe();
         this.WhenAnyValue(v => v.SelectedItem).Where(i => i != null).Subscribe(Selected);
     }

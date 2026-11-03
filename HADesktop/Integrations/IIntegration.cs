@@ -25,16 +25,6 @@ namespace HADesktop.Integrations
         public IConfigurationObject Configuration { get; set; }
 
         /// <summary>
-        /// Load saved configuration from ConfigurationService if applicable
-        /// </summary>
-        public void Load();
-
-        /// <summary>
-        /// Save a new configuration to ConfigurationService
-        /// </summary>
-        public void Save(IConfigurationObject configuration);
-
-        /// <summary>
         /// Activate the IIntegration and start updating/listening to Entities
         /// </summary>
         public void Activate();
@@ -43,6 +33,11 @@ namespace HADesktop.Integrations
         /// Deactivate the IIntegration and clean up
         /// </summary>
         public void Deactivate();
+
+        /// <summary>
+        /// Reactivate the IIntegration if it is activated
+        /// </summary>
+        public void Reactivate();
         public Task Enable();
         public Task Disable();
     }

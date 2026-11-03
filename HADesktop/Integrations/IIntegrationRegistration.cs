@@ -26,5 +26,7 @@
         /// Create a new Integration instance without configuration
         /// </summary>
         public IIntegration CreateInstance();
+
+        public Type GetConfigType();
     }
 }
