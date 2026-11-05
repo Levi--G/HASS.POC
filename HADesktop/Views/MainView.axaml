@@ -19,14 +19,22 @@
 				<Setter Property="Effect" Value="blur(10)" />
 			</Style>
 		</Panel.Styles>
-		<u:OverlayDialogHost Name="Overlay" IsModalStatusReporter="True"/>
+		<u:OverlayDialogHost Name="Overlay" IsModalStatusReporter="True" ZIndex="100"/>
 		<Panel Classes.Blur="{Binding #Overlay.(u:OverlayDialogHost.IsInModalStatus)}" IsEnabled="{Binding !#Overlay.(u:OverlayDialogHost.IsInModalStatus)}">
 			<!--<u:OverlayDialogHost HostId="main" />-->
 			<!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
 			<Panel IsVisible="{Binding ShowOverview}" Margin="20">
-				<StackPanel Orientation="Vertical">
+				<Grid RowDefinitions="auto,auto,*">
 					<TextBlock Text="{l:Loc MainView.Modules}" FontSize="18"/>
-					<WrapPanel ItemSpacing="10" LineSpacing="10">
+
+					<u:Banner Type="Warning" Grid.Row="1" IsVisible="{Binding IsConfigurationDirty}" Margin="0,10">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{l:Loc MainView.SaveWarning}"/>
+							<u:IconButton Margin="5,-5,-5,-5" Icon="💾" Padding="5" MinHeight="0" Height="28" FontSize="12" Content="{l:Loc MainView.SaveButton}" Theme="{DynamicResource SolidIconButton}" Command="{Binding SaveConfigurationCommand}"/>
+						</StackPanel>
+					</u:Banner>
+
+					<ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
 						<ItemsControl ItemsSource="{Binding ActiveIntegrations}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
@@ -34,16 +42,25 @@
 										<HeaderedContentControl.Header>
 											<DockPanel>
 												<u:IconButton Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).ConfigureIntegrationCommand}" CommandParameter="{Binding}" DockPanel.Dock="Right" Icon="⚙" Content="{l:Loc MainView.Configure}" Theme="{DynamicResource SolidIconButton}" Classes="Success" CornerRadius="16"/>
-												<TextBlock VerticalAlignment="Center" Text="{ Binding Name}" Classes="Header H6" Margin="0,0,20,0" TextWrapping="Wrap" />
+												<TextBlock VerticalAlignment="Center" Text="{Binding Registration.Name}" Classes="Header H6" Margin="0,0,20,0" TextWrapping="Wrap" />
 											</DockPanel>
 										</HeaderedContentControl.Header>
-										<TextBlock Text="{ Binding Description}" TextWrapping="Wrap"/>
+										<Grid RowDefinitions="*,auto" ColumnDefinitions="*,*">
+											<TextBlock Text="{Binding Registration.Description}" TextWrapping="Wrap" Grid.ColumnSpan="2"/>
+											<TextBlock Text="{l:Loc MainView.Enabled}" Grid.Row="1" HorizontalAlignment="Center"/>
+											<ToggleSwitch Grid.Row="1" Grid.Column="1" IsChecked="{Binding Enabled, Mode=OneWay}" HorizontalAlignment="Center" Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).ToggleIntegrationCommand}" CommandParameter="{Binding}"/>
+										</Grid>
 									</HeaderedContentControl>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<WrapPanel ItemSpacing="10" LineSpacing="10" Orientation="Horizontal" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
 						</ItemsControl>
-					</WrapPanel>
-				</StackPanel>
+					</ScrollViewer>
+				</Grid>
 				<Canvas>
 					<u:IconButton Command="{Binding AddModuleCommand}" Canvas.Right="20" Canvas.Bottom="20" Icon="➕" Content="{l:Loc MainView.AddModule}" Theme="{DynamicResource SolidIconButton}" Classes="Large" CornerRadius="20"/>
 				</Canvas>
@@ -55,12 +72,12 @@
 						<HeaderedContentControl.Header>
 							<DockPanel>
 								<StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-									<u:IconButton Command="{Binding SaveModuleCommand}" IsVisible="{Binding SelectedIntegrationConfig.IsDirty}" Icon="💾" Content="{l:Loc MainView.Save}" Theme="{DynamicResource SolidIconButton}" CornerRadius="16"/>
-									<u:IconButton Command="{Binding UndoModuleCommand}" IsVisible="{Binding SelectedIntegrationConfig.IsDirty}" Icon="↺" Content="{l:Loc MainView.Undo}" Theme="{DynamicResource SolidIconButton}" Classes="Warning" CornerRadius="16"/>
+									<u:IconButton Command="{Binding ApplyModuleCommand}" IsVisible="{Binding SelectedIntegrationConfig.IsDirty}" Icon="⚙️" Content="{l:Loc MainView.Apply}" Theme="{DynamicResource SolidIconButton}" CornerRadius="16"/>
+									<u:IconButton Command="{Binding DiscardModuleCommand}" IsVisible="{Binding SelectedIntegrationConfig.IsDirty}" Icon="↺" Content="{l:Loc MainView.Discard}" Theme="{DynamicResource SolidIconButton}" Classes="Warning" CornerRadius="16"/>
 									<u:IconButton Command="{Binding ReturnModuleCommand}" Icon="←" Content="{l:Loc MainView.Back}" Theme="{DynamicResource SolidIconButton}" Classes="Success" CornerRadius="16"/>
-									<u:IconButton Command="{Binding DisableModuleCommand}" Icon="❌" Content="{l:Loc MainView.Disable}" Theme="{DynamicResource SolidIconButton}" Classes="Danger" CornerRadius="16"/>
+									<u:IconButton Command="{Binding RemoveModuleCommand}" Icon="❌" Content="{l:Loc MainView.Remove}" Theme="{DynamicResource SolidIconButton}" Classes="Danger" CornerRadius="16"/>
 								</StackPanel>
-								<TextBlock Text="{ Binding SelectedIntegrationConfig.Integration.Name}" Classes="Header H6" />
+								<TextBlock Text="{Binding SelectedIntegrationConfig.Integration.Registration.Name}" Classes="Header H6" />
 							</DockPanel>
 						</HeaderedContentControl.Header>
 						<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

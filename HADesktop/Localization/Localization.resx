@@ -97,10 +97,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MouseModule.Name" xml:space="preserve">
+  <data name="MOU.Name" xml:space="preserve">
     <value>Mouse</value>
   </data>
-  <data name="MouseModule.Description" xml:space="preserve">
+  <data name="MOU.Description" xml:space="preserve">
     <value>Provides a mouse activity sensor and/or mouse position</value>
   </data>
   <data name="WelcomeDialog.Language" xml:space="preserve">
@@ -166,17 +166,17 @@
   <data name="MainView.Loading" xml:space="preserve">
     <value>Loading...</value>
   </data>
-  <data name="MainView.Save" xml:space="preserve">
-    <value>Save</value>
+  <data name="MainView.Apply" xml:space="preserve">
+    <value>Apply</value>
   </data>
-  <data name="MainView.Undo" xml:space="preserve">
-    <value>Undo</value>
+  <data name="MainView.Discard" xml:space="preserve">
+    <value>Discard</value>
   </data>
   <data name="MainView.Back" xml:space="preserve">
     <value>Back</value>
   </data>
-  <data name="MainView.Disable" xml:space="preserve">
-    <value>Disable</value>
+  <data name="MainView.Remove" xml:space="preserve">
+    <value>Remove</value>
   </data>
   <data name="WelcomeDialog.Port" xml:space="preserve">
     <value>Port</value>
@@ -195,5 +195,14 @@
   </data>
   <data name="ModuleDialog.SearchPlaceholder" xml:space="preserve">
     <value>Search...</value>
+  </data>
+  <data name="MainView.SaveButton" xml:space="preserve">
+    <value>Save this configuration</value>
+  </data>
+  <data name="MainView.SaveWarning" xml:space="preserve">
+    <value>Your current configuration is not saved, if everything works as expected</value>
+  </data>
+  <data name="MainView.Enabled" xml:space="preserve">
+    <value>Enabled: </value>
   </data>
 </root>

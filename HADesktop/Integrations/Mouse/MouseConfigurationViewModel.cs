@@ -1,5 +1,4 @@
 ﻿using DynamicData.Binding;
-using HADesktop.Integrations.Mouse;
 using System.Reactive.Disposables;
 
 namespace HADesktop.Integrations.Mouse;
@@ -11,16 +10,18 @@ internal partial class MouseConfigurationViewModel : IntegrationViewModelBase<Mo
 
     protected override void Activate(CompositeDisposable disposables)
     {
-        this.WhenAnyPropertyChanged(nameof(UpdateIntervals)).Subscribe(s => IsDirty = true);
+        disposables.Add(this.WhenAnyPropertyChanged(nameof(UpdateIntervals)).Subscribe(s => IsDirty = true));
     }
 
-    protected override ValueTask<MouseConfiguration> GetConfig()
+    protected override ValueTask ApplyConfig()
     {
-        return ValueTask.FromResult(new MouseConfiguration() { UpdateIntervals = UpdateIntervals });
+        Config.UpdateIntervals = UpdateIntervals;
+        return ValueTask.CompletedTask;
     }
 
-    protected override async ValueTask SetConfig(MouseConfiguration config)
+    protected override ValueTask LoadConfig()
     {
-        UpdateIntervals = config.UpdateIntervals;
+        UpdateIntervals = Config.UpdateIntervals;
+        return ValueTask.CompletedTask;
     }
 }

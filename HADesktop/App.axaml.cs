@@ -53,6 +53,7 @@ public partial class App : Application
                 {
                     DataContext = new MainViewModel()
                 };
+                mw.DetachedFromLogicalTree += (s, e) => { (mw.DataContext as MainViewModel)?.Deactivate(); };
                 desktop.MainWindow = mw;
             }
             desktop.MainWindow.Show();

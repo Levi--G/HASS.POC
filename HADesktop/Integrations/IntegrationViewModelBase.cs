@@ -1,19 +1,14 @@
-﻿using DynamicData.Binding;
-using HADesktop.Integrations;
-using HADesktop.Services;
-using HADesktop.ViewModels;
-using System.ComponentModel;
+﻿using HADesktop.ViewModels;
 using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
 
 namespace HADesktop.Integrations
 {
     internal abstract partial class IntegrationViewModelBase<ConfigurationType> : ViewModelBase, IIntegrationViewModel
         where ConfigurationType : class, IConfigurationObject, new()
     {
-        public IIntegration? Integration { get; init; }
-        public IConfigurationObject Configuration { get; init; } = new ConfigurationType();
+        public IIntegration Integration { get; set; } = null!;
+        public IConfigurationObject Configuration => Integration.Configuration;
+        public ConfigurationType Config => (ConfigurationType)Configuration;
 
         [Reactive]
         public partial bool IsDirty { get; protected set; } = false;
@@ -31,7 +26,7 @@ namespace HADesktop.Integrations
 
         public IntegrationViewModelBase()
         {
-            
+
         }
 
         public void Activate()
@@ -39,7 +34,7 @@ namespace HADesktop.Integrations
             Activate(disposables);
         }
 
-        public async Task Load()
+        public async Task Discard()
         {
             if (IsLoading)
             {
@@ -48,31 +43,28 @@ namespace HADesktop.Integrations
             IsLoading = true;
             using (DelayChangeNotifications())
             {
-                await Task.Run(async () => await SetConfig(Configuration as ConfigurationType ?? new ConfigurationType()));
+                await LoadConfig();
             }
             IsDirty = false;
             IsLoading = false;
         }
 
-        public async Task Save()
+        public async Task Apply()
         {
-            if(IsLoading)
+            if (IsLoading)
             {
                 return;
             }
             IsLoading = true;
             IsSaving = true;
-            await Task.Run(async () =>
-            {
-                Integration?.Save(await GetConfig());
-            });
+            await ApplyConfig();
             IsDirty = false;
             IsLoading = false;
             IsSaving = false;
         }
 
-        protected abstract ValueTask SetConfig(ConfigurationType config);
-        protected abstract ValueTask<ConfigurationType> GetConfig();
+        protected abstract ValueTask LoadConfig();
+        protected abstract ValueTask ApplyConfig();
         protected abstract void Activate(CompositeDisposable disposables);
 
         public void Dispose()
@@ -84,7 +76,7 @@ namespace HADesktop.Integrations
         {
             if (Integration != null)
             {
-                return Integration.Enable();
+                Integration.Enable();
             }
             return Task.CompletedTask;
         }
@@ -93,7 +85,7 @@ namespace HADesktop.Integrations
         {
             if (Integration != null)
             {
-                return Integration.Disable();
+                Integration.Disable();
             }
             return Task.CompletedTask;
         }

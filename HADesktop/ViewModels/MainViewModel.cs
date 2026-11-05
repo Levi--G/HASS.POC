@@ -13,6 +13,8 @@ public partial class MainViewModel : ViewModelBase
     public bool ShowConfig => SelectedIntegrationConfig != null;
     [Reactive]
     internal partial List<IIntegration>? ActiveIntegrations { get; set; } = [];
+    [Reactive]
+    internal partial bool IsConfigurationDirty { get; set; } = false;
 
     AppSettingsService AppSettingsService = AppLocator.Current.GetRequiredService<AppSettingsService>();
 
@@ -25,18 +27,30 @@ public partial class MainViewModel : ViewModelBase
     {
         ShowWelcomeDialog();
         LoadActiveIntegrations();
+        AppSettingsService.OnConfigStateChanged += AppSettingsService_OnConfigStateChanged;
+        AppSettingsService_OnConfigStateChanged();
+    }
+
+    private void AppSettingsService_OnConfigStateChanged()
+    {
+        IsConfigurationDirty = AppSettingsService.IsConfigDirty;
+    }
+
+    public void Deactivate()
+    {
+        AppSettingsService.OnConfigStateChanged -= AppSettingsService_OnConfigStateChanged;
     }
 
     void LoadActiveIntegrations()
     {
-        ActiveIntegrations = AppLocator.Current.GetServices<IIntegration>().Where(i => i.Enabled).ToList();
+        ActiveIntegrations = AppLocator.Current.GetRequiredService<AppSettingsService>().GetIntegrations();
     }
 
     async void ShowWelcomeDialog()
     {
         if (AppSettingsService.Settings.IsOnboarding)
         {
-            var result = await OverlayDialog.ShowCustomModal<WelcomeDialog, WelcomeDialogViewModel, object>(new WelcomeDialogViewModel(), options: new() { CanDragMove = false, IsCloseButtonVisible = false });
+            var result = await OverlayDialog.ShowCustomAsync<WelcomeDialog, WelcomeDialogViewModel, object>(new WelcomeDialogViewModel(), options: new() { CanDragMove = false, IsCloseButtonVisible = false });
             if ((result as bool?) != true)
             {
                 (App.Current as App)?.DoShutdown();
@@ -51,45 +65,57 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [ReactiveCommand]
-    private async void ConfigureIntegration(IIntegration integration)
+    private async Task ConfigureIntegration(IIntegration integration)
     {
-        SelectedIntegrationConfig = integration.ConfigurationViewModel;
-        await SelectedIntegrationConfig.Load();
+        SelectedIntegrationConfig = integration.Registration.CreateViewModel(integration);
+        await SelectedIntegrationConfig.Discard();
         SelectedIntegrationConfig.Activate();
     }
 
     [ReactiveCommand]
-    private async void AddModule()
+    private async Task ToggleIntegration(IIntegration integration)
     {
-        var result = await OverlayDialog.ShowCustomModal<ModuleDialog, ModuleDialogViewModel, IIntegration>(new ModuleDialogViewModel(), options: new() { CanDragMove = false });
+        if (integration.Enabled)
+        {
+            integration.Disable();
+        }
+        else
+        {
+            integration.Enable();
+        }
+    }
+
+    [ReactiveCommand]
+    private async Task AddModule()
+    {
+        var result = await OverlayDialog.ShowCustomAsync<ModuleDialog, ModuleDialogViewModel, IIntegrationRegistration>(new ModuleDialogViewModel(), options: new() { CanDragMove = false });
         if (result != null)
         {
-            //TODO add the module and reload
-            await result.Enable();
+            AppSettingsService.AddIntegration(result);
             LoadActiveIntegrations();
         }
     }
 
     [ReactiveCommand]
-    private async void SaveModule()
+    private async Task ApplyModule()
     {
         if (SelectedIntegrationConfig != null)
         {
-            await SelectedIntegrationConfig.Save();
+            await SelectedIntegrationConfig.Apply();
         }
     }
 
     [ReactiveCommand]
-    private async void UndoModule()
+    private async Task DiscardModule()
     {
         if (SelectedIntegrationConfig != null)
         {
-            await SelectedIntegrationConfig.Load();
+            await SelectedIntegrationConfig.Discard();
         }
     }
 
     [ReactiveCommand]
-    private async void ReturnModule()
+    private async Task ReturnModule()
     {
         var vmb = SelectedIntegrationConfig;
         SelectedIntegrationConfig = null;
@@ -97,16 +123,21 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [ReactiveCommand]
-    private async void DisableModule()
+    private async Task RemoveModule()
     {
         if (SelectedIntegrationConfig != null)
         {
             var vmb = SelectedIntegrationConfig;
             SelectedIntegrationConfig = null;
-            var t = vmb.Disable();
+            AppSettingsService.RemoveIntegration(vmb.Integration);
             LoadActiveIntegrations();
-            await t;
             vmb.Dispose();
         }
+    }
+
+    [ReactiveCommand]
+    private async Task SaveConfiguration()
+    {
+        AppSettingsService.SaveConfigurationToDisk();
     }
 }

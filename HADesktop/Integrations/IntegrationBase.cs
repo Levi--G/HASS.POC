@@ -8,28 +8,22 @@ namespace HADesktop.Integrations
         where ConfigurationType : IConfigurationObject, new()
         where ViewModelType : IIntegrationViewModel, new()
     {
-        public string Name => LocalizationService.GetLocalizedByKey(LocalizationKey + ".Name");
-        public string Description => LocalizationService.GetLocalizedByKey(LocalizationKey + ".Description");
-        protected abstract string LocalizationKey { get; }
-        public abstract string Code { get; }
-        public IIntegrationViewModel ConfigurationViewModel => new ViewModelType() { Integration = this, Configuration = configuration };
+        public IIntegrationRegistration Registration { get; set; } = null!;
+        protected string Code => Registration.Code;
+        protected ConfigurationType Config = new();
+        public IConfigurationObject Configuration
+        {
+            get => Config;
+            set => Config = (ConfigurationType)value;
+        }
+        public bool Enabled => Config.Enabled;
+        public int Index { get; set; }
 
         protected AppSettingsService ConfigurationService => AppLocator.Current.GetRequiredService<AppSettingsService>();
-        protected LocalizationService LocalizationService => AppLocator.Current.GetRequiredService<LocalizationService>();
         protected HomeAssistantService HomeAssistantService => AppLocator.Current.GetRequiredService<HomeAssistantService>();
         protected SchedulingService SchedulingService => AppLocator.Current.GetRequiredService<SchedulingService>();
 
-        public int Index { get; set; }
-
-        protected ConfigurationType configuration = new();
-        public IConfigurationObject Configuration
-        {
-            get => configuration;
-            set => configuration = (ConfigurationType)value;
-        }
-
-        public bool Enabled => configuration.Enabled;
-        bool activated;
+        private bool activated;
 
         protected abstract void ActivateIntegration();
         protected abstract void DeactivateIntegration();
@@ -59,33 +53,24 @@ namespace HADesktop.Integrations
             }
         }
 
-        protected static void Register<I, VM, V>()
-            where I : IIntegration, new()
-            where VM : IIntegrationViewModel
-            where V : Control, new()
-        {
-            AppLocator.CurrentMutable.RegisterLazySingleton<IIntegration>(() => new I());
-            AppLocator.Current.GetRequiredService<IntegrationViewLocator>().Register(typeof(VM), () => new V());
-        }
-
-        public async Task Enable()
+        public void Enable()
         {
             if (Enabled)
             {
                 return;
             }
-            ConfigurationService.ModifyConfig(() => configuration.Enabled = true);
-            await Task.Run(Activate);
+            ConfigurationService.ModifyConfig(() => Config.Enabled = true);
+            Activate();
         }
 
-        public async Task Disable()
+        public void Disable()
         {
             if (!Enabled)
             {
                 return;
             }
-            ConfigurationService.ModifyConfig(() => configuration.Enabled = false);
-            await Task.Run(Deactivate);
+            ConfigurationService.ModifyConfig(() => Config.Enabled = false);
+            Deactivate();
         }
     }
 }

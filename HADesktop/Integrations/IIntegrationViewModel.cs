@@ -4,15 +4,15 @@ namespace HADesktop.Integrations
 {
     public interface IIntegrationViewModel : IDisposable
     {
-        public IIntegration? Integration { get; init; }
-        public IConfigurationObject Configuration { get; init; }
+        public IIntegration Integration { get; set; }
+        public IConfigurationObject Configuration { get; }
         public bool IsDirty { get; }
         public bool IsLoading { get; }
         public bool IsSaving { get; }
         public bool IsConfigValid { get; }
         public void Activate();
-        public Task Load();
-        public Task Save();
+        public Task Discard();
+        public Task Apply();
         public Task Enable();
         public Task Disable();
     }

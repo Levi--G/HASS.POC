@@ -24,10 +24,11 @@ public partial class ModuleDialogViewModel : ViewModelBase, IDialogContext
 
     [Reactive]
     IIntegrationRegistration? selectedItem;
+    AppSettingsService AppSettingsService = AppLocator.Current.GetRequiredService<AppSettingsService>();
 
     public ModuleDialogViewModel()
     {
-        integrations.AddRange(AppLocator.Current.GetServices<IIntegrationRegistration>());
+        integrations.AddRange(AppSettingsService.GetPossibleIntegrationRegistrations());
         var filter = this.WhenAnyValue(v => v.SearchText).Throttle(TimeSpan.FromMilliseconds(300)).Select<string?, Func<IIntegrationRegistration, bool>>(s => i => s == null || i.Name.Contains(s, StringComparison.OrdinalIgnoreCase) || i.Description.Contains(s, StringComparison.OrdinalIgnoreCase));
         integrations.Connect().Filter(filter).Bind(out filteredIntegrations).Subscribe();
         this.WhenAnyValue(v => v.SelectedItem).Where(i => i != null).Subscribe(Selected);
@@ -38,7 +39,7 @@ public partial class ModuleDialogViewModel : ViewModelBase, IDialogContext
         RequestClose?.Invoke(this, null);
     }
 
-    private void Selected(IIntegration? selection)
+    private void Selected(IIntegrationRegistration? selection)
     {
         RequestClose?.Invoke(this, selection);
     }

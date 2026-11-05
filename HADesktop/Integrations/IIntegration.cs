@@ -15,14 +15,14 @@ namespace HADesktop.Integrations
         public int Index { get; set; }
 
         /// <summary>
-        /// The view containing the configuration elements
-        /// </summary>
-        public IIntegrationViewModel ConfigurationViewModel { get; }
-
-        /// <summary>
         /// The configuration object of the integration
         /// </summary>
         public IConfigurationObject Configuration { get; set; }
+
+        /// <summary>
+        /// The registration object of the integration
+        /// </summary>
+        public IIntegrationRegistration Registration { get; set; }
 
         /// <summary>
         /// Activate the IIntegration and start updating/listening to Entities
@@ -38,7 +38,7 @@ namespace HADesktop.Integrations
         /// Reactivate the IIntegration if it is activated
         /// </summary>
         public void Reactivate();
-        public Task Enable();
-        public Task Disable();
+        public void Enable();
+        public void Disable();
     }
 }

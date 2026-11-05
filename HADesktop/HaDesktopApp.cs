@@ -31,7 +31,7 @@ namespace HADesktop
             //Load all integrations one by one
             //AppLocator.CurrentMutable.RegisterLazySingleton<IIntegration>(() => new MouseIntegration());
             //or (my preference for now)
-            MouseIntegration.Register();
+            MouseIntegrationRegistration.Register();
             //or (automatic way)
             //var integrationTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IIntegration).IsAssignableFrom(t));
             //foreach (var integrationType in integrationTypes)
@@ -53,7 +53,8 @@ namespace HADesktop
 
         void LoadAppIntegrations()
         {
-            AppLocator.Current.GetRequiredService<AppSettingsService>().LoadIntegrations(AppLocator.Current.GetServices<IIntegrationRegistration>().ToList());
+            AppLocator.Current.GetRequiredService<AppSettingsService>().Verify();
+            AppLocator.Current.GetRequiredService<AppSettingsService>().LoadIntegrations();
         }
 
         void StartAppIntegrations()
@@ -66,10 +67,7 @@ namespace HADesktop
             //stop integrations from running
             AppLocator.Current.GetService<SchedulingService>()?.Stop();
 
-            foreach (var item in AppLocator.Current.GetServices<IIntegration>())
-            {
-                item.Deactivate();
-            }
+            AppLocator.Current.GetRequiredService<AppSettingsService>().GetIntegrations().ForEach(i => i.Deactivate());
         }
 
         async Task StopAppServices()

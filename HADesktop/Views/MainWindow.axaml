@@ -7,6 +7,8 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="HADesktop.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="HADesktop">
+        Title="HADesktop"
+			 MinWidth="750"
+			 MinHeight="375">
         <views:MainView />
 </Window>

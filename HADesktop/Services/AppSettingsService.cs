@@ -11,16 +11,29 @@ namespace HADesktop.Services;
 
 internal class AppSettingsService
 {
+    public event Action? OnConfigStateChanged;
+
     public AppSettings Settings => settings;
 
     AppSettings settings = new();
 
     public string Version { get; private set; } = "0.0.0";
     public bool IsOnboarding { get => Settings.IsOnboarding; set { Settings.IsOnboarding = value; Save(); } }
+    public bool IsConfigDirty
+    {
+        get; 
+        private set
+        {
+            if (value != field)
+            {
+                field = value;
+                OnConfigStateChanged?.Invoke();
+            }
+        }
+    } = false;
 
     public AppSettingsService()
     {
-        LoadConfigurationFromDisk();
     }
 
     public void Load()
@@ -42,18 +55,19 @@ internal class AppSettingsService
         using (configkey.Lock())
         {
             //remove parsing errors
-            settings.configurationObjects.RemoveAll(s => s.Config == null);
+            settings.ConfigurationObjects.RemoveAll(s => s.Config == null);
             //remove duplicate indexes
             var indexset = new HashSet<int>();
-            settings.configurationObjects.RemoveAll(s => !indexset.Add(s.Index));
+            settings.ConfigurationObjects.RemoveAll(s => !indexset.Add(s.Index));
         }
     }
 
-    public void LoadIntegrations(List<IIntegrationRegistration> registrations)
+    public void LoadIntegrations()
     {
+        var registrations = AppLocator.Current.GetServices<IIntegrationRegistration>().ToList();
         using (configkey.Lock())
         {
-            foreach (var conf in settings.configurationObjects)
+            foreach (var conf in settings.ConfigurationObjects)
             {
                 if (conf.Integration == null)
                 {
@@ -63,6 +77,7 @@ internal class AppSettingsService
                         var integration = registration.CreateInstance();
                         integration.Index = conf.Index;
                         integration.Configuration = conf.Config;
+                        integration.Registration = registration;
                         conf.Integration = integration;
                     }
                 }
@@ -74,8 +89,8 @@ internal class AppSettingsService
     {
         using (configkey.Lock())
         {
-            var list = new List<IIntegration>(settings.configurationObjects.Count);
-            foreach (var conf in settings.configurationObjects)
+            var list = new List<IIntegration>(settings.ConfigurationObjects.Count);
+            foreach (var conf in settings.ConfigurationObjects)
             {
                 if (conf.Integration != null)
                 {
@@ -84,6 +99,61 @@ internal class AppSettingsService
             }
             return list;
         }
+    }
+
+    public List<IIntegrationRegistration> GetPossibleIntegrationRegistrations()
+    {
+        using (configkey.Lock())
+        {
+            var list = new List<IIntegrationRegistration>();
+            foreach (var reg in AppLocator.Current.GetServices<IIntegrationRegistration>())
+            {
+                if (!reg.SingleInstance || !settings.ConfigurationObjects.Any(s=>s.Config.GetType() == reg.GetConfigType()))
+                {
+                    list.Add(reg);
+                }
+            }
+            return list;
+        }
+    }
+
+    public IIntegration AddIntegration(IIntegrationRegistration registration)
+    {
+        var instance = registration.CreateInstance();
+        using (configkey.Lock())
+        {
+            instance.Index = GetNextIndex();
+            instance.Registration = registration;
+            instance.Configuration = registration.GetDefaultConfig();
+            settings.ConfigurationObjects.Add(new() { Config = instance.Configuration, Index = instance.Index, Integration = instance });
+        }
+        IsConfigDirty = true;
+        return instance;
+    }
+
+    public void RemoveIntegration(IIntegration instance)
+    {
+        using (configkey.Lock())
+        {
+            instance.Disable();
+            instance.Deactivate();
+            settings.ConfigurationObjects.Remove(settings.ConfigurationObjects.First(c => c.Integration == instance));
+        }
+        IsConfigDirty = true;
+    }
+
+    /// <summary>
+    /// Caller should lock configkey!
+    /// </summary>
+    /// <returns>The next available index</returns>
+    int GetNextIndex()
+    {
+        int index = 0;
+        while (settings.ConfigurationObjects.Any(c => c.Index == index))
+        {
+            index++;
+        }
+        return index;
     }
 
     public void Save()
@@ -132,6 +202,7 @@ internal class AppSettingsService
         {
             mod();
         }
+        IsConfigDirty = true;
     }
     public async Task ModifyConfigAsync(Action mod)
     {
@@ -139,9 +210,11 @@ internal class AppSettingsService
         {
             mod();
         }
+        IsConfigDirty = true;
     }
     public void LoadConfigurationFromDisk()
     {
+        var oldint = settings.ConfigurationObjects;
         try
         {
             if (File.Exists(jsonLocation))
@@ -153,6 +226,25 @@ internal class AppSettingsService
         {
             //TODO
         }
+        if (oldint.Count > 0)
+        {
+            using (configkey.Lock())
+            {
+                foreach (var conf in oldint)
+                {
+                    if (conf.Integration != null)
+                    {
+                        var newstore = settings.ConfigurationObjects.FirstOrDefault(s => s.Index == conf.Index);
+                        if (newstore != null && newstore.Config.GetType() == conf.Config.GetType())
+                        {
+                            conf.Integration.Configuration = newstore.Config;
+                            newstore.Integration = conf.Integration;
+                        }
+                    }
+                }
+            }
+        }
+        IsConfigDirty = false;
     }
     public void SaveConfigurationToDisk()
     {
@@ -171,6 +263,7 @@ internal class AppSettingsService
         {
             //TODO
         }
+        IsConfigDirty = false;
     }
 
     readonly string jsonLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Constants.AppName, "config.json");
@@ -198,7 +291,7 @@ internal class AppSettingsService
 
         public string Language { get; set; } = "English";
 
-        public List<IntegrationStore> configurationObjects = [];
+        public List<IntegrationStore> ConfigurationObjects { get; set; } = [];
     }
 
     public class IntegrationStore

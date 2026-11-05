@@ -70,6 +70,15 @@ namespace HADesktop.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string MainView_Apply {
+            get {
+                return ResourceManager.GetString("MainView.Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back.
         /// </summary>
         public static string MainView_Back {
@@ -88,11 +97,20 @@ namespace HADesktop.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable.
+        ///   Looks up a localized string similar to Discard.
         /// </summary>
-        public static string MainView_Disable {
+        public static string MainView_Discard {
             get {
-                return ResourceManager.GetString("MainView.Disable", resourceCulture);
+                return ResourceManager.GetString("MainView.Discard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled: .
+        /// </summary>
+        public static string MainView_Enabled {
+            get {
+                return ResourceManager.GetString("MainView.Enabled", resourceCulture);
             }
         }
         
@@ -115,20 +133,29 @@ namespace HADesktop.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   Looks up a localized string similar to Remove.
         /// </summary>
-        public static string MainView_Save {
+        public static string MainView_Remove {
             get {
-                return ResourceManager.GetString("MainView.Save", resourceCulture);
+                return ResourceManager.GetString("MainView.Remove", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Undo.
+        ///   Looks up a localized string similar to Save this configuration.
         /// </summary>
-        public static string MainView_Undo {
+        public static string MainView_SaveButton {
             get {
-                return ResourceManager.GetString("MainView.Undo", resourceCulture);
+                return ResourceManager.GetString("MainView.SaveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your current configuration is not saved, if everything works as expected.
+        /// </summary>
+        public static string MainView_SaveWarning {
+            get {
+                return ResourceManager.GetString("MainView.SaveWarning", resourceCulture);
             }
         }
         
@@ -153,18 +180,18 @@ namespace HADesktop.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Provides a mouse activity sensor and/or mouse position.
         /// </summary>
-        public static string MouseModule_Description {
+        public static string MOU_Description {
             get {
-                return ResourceManager.GetString("MouseModule.Description", resourceCulture);
+                return ResourceManager.GetString("MOU.Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Mouse.
         /// </summary>
-        public static string MouseModule_Name {
+        public static string MOU_Name {
             get {
-                return ResourceManager.GetString("MouseModule.Name", resourceCulture);
+                return ResourceManager.GetString("MOU.Name", resourceCulture);
             }
         }
         
